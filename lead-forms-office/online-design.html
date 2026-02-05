@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Design Services</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal {
+      background: #fff;
+      width: 450px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 30px;
+      position: relative;
+    }
+
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 92%; height: 100%; background: #3b82f6; }
+
+    h2 { font-size: 22px; margin: 0 0 20px; text-align: center; color: #111827; }
+
+    .options { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+    .option { display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer; background: #fff; }
+    .option + .option { border-top: 1px solid #e5e7eb; }
+
+    .radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #cbd5e1; position: relative; flex: none; }
+    .option.selected .radio { border-color: #3b82f6; }
+    .option.selected .radio::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: #3b82f6; }
+
+    .label { font-size: 16px; color: #1f2937; }
+
+    .navigation { display: flex; justify-content: space-between; margin-top: 24px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #e9ecef; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress" id="progressBar"></div></div>
+      <h2>Would you consider online design services?</h2>
+
+      <div class="options" id="options">
+        <div class="option" data-value="yes">
+          <div class="radio"></div>
+          <div class="label">Yes</div>
+        </div>
+        <div class="option" data-value="no">
+          <div class="radio"></div>
+          <div class="label">No</div>
+        </div>
+      </div>
+
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button id="continueBtn" class="btn btn-primary" disabled onclick="continueToNext()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let formData = {};
+    let previousFormData = {};
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Ensure continue button is disabled by default
+      document.getElementById('continueBtn').disabled = true;
+      
+      loadPreviousFormData();
+
+      // Preselect if coming back
+      if (previousFormData.onlineDesignServices) {
+        const value = previousFormData.onlineDesignServices;
+        const option = document.querySelector(`.option[data-value="${value}"]`);
+        if (option) {
+          document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+          option.classList.add('selected');
+          formData = { onlineDesignServices: value };
+          // Enable continue button only if option is selected
+          document.getElementById('continueBtn').disabled = false;
+        }
+      }
+
+      document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', () => selectOption(option));
+      });
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', function(e){ if(e.target===this){ closeModal(); }});
+    });
+
+    function loadPreviousFormData() {
+      // Prefer the most complete dataset available
+      const fromThisStep = localStorage.getItem('completeOnlineDesignFormData');
+      const fromPrevStep = localStorage.getItem('completeHiringFormData');
+      const raw = fromThisStep || fromPrevStep;
+      if (raw) previousFormData = JSON.parse(raw);
+    }
+
+    function selectOption(optionEl) {
+      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      optionEl.classList.add('selected');
+      formData = { onlineDesignServices: optionEl.dataset.value };
+      document.getElementById('continueBtn').disabled = false;
+    }
+
+    function continueToNext() {
+      const completeFormData = { ...previousFormData, ...formData };
+      localStorage.setItem('completeOnlineDesignFormData', JSON.stringify(completeFormData));
+      window.location.href = 'location.html';
+    }
+
+    function goBack() { window.location.href = 'hiring-likelihood.html'; }
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

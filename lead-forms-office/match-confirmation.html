@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matches Found</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #eaf8f2; width: 600px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 99%; height: 100%; background: #3b82f6; }
+    .check { width: 88px; height: 88px; border-radius: 50%; background: #34d399; margin: 0 auto 16px; display: grid; place-items: center; }
+    .check:after { content: '\2713'; color: #fff; font-size: 42px; line-height: 1; }
+    h2 { margin: 8px 0 8px; font-size: 28px; line-height: 1.25; text-align: center; color: #0f172a; }
+    .subtitle { text-align: center; color: #374151; margin-bottom: 16px; font-size: 16px; }
+    .footer { background: #fff; margin: 24px -30px -30px; padding: 18px 30px; border-radius: 0 0 12px 12px; display: flex; justify-content: space-between; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #e9ecef; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:hover { background: #2563eb; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+      <div class="check"></div>
+      <h2>Great! We've found you the perfect matches.</h2>
+      <div class="subtitle">Lastly, we need your details to attach to your request.</div>
+
+      <div class="footer">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button class="btn btn-primary" onclick="continueToNext()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let previousFormData = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Prefer latest data from location step
+      const fromLocation = localStorage.getItem('completeLocationFormData');
+      const fromOnline = localStorage.getItem('completeOnlineDesignFormData');
+      const raw = fromLocation || fromOnline;
+      if (raw) previousFormData = JSON.parse(raw);
+
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    });
+
+    function continueToNext() {
+      // Keep chaining the current dataset
+      localStorage.setItem('completeMatchConfirmationData', JSON.stringify(previousFormData));
+      window.location.href = 'email.html';
+    }
+
+    function goBack() { window.location.href = 'online-design.html'; }
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

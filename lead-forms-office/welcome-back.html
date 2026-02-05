@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome Back</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #fff; width: 720px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 85%; height: 100%; background: #3b82f6; }
+    .avatar { width: 96px; height: 96px; border-radius: 50%; background: #fde68a; margin: 8px auto 12px; display: grid; place-items: center; font-size: 48px; color: #1f2937; }
+    h2 { text-align: center; font-size: 32px; margin: 8px 0 8px; color: #0f172a; }
+    .subtitle { text-align: center; color: #374151; margin-bottom: 16px; font-size: 16px; }
+    .footer { display: flex; justify-content: space-between; margin-top: 16px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #e9ecef; }
+    .btn-primary { background: #10b981; color: #fff; }
+    .btn-primary:hover { background: #059669; }
+    .terms { text-align: center; color: #6b7280; margin-top: 18px; font-size: 13px; }
+    .terms a { color: #374151; text-decoration: underline; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+
+      <div class="avatar">🙂</div>
+      <h2 id="welcomeTitle">Welcome back</h2>
+      <div class="subtitle">It looks like you've used our service before. Submit your request now and we'll help you log in to view your matches.</div>
+
+      <div class="footer">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button class="btn btn-primary" onclick="submitRequest()">Submit request</button>
+      </div>
+
+      <div class="terms">By continuing, you confirm your agreement to our <a href="#" target="_blank" rel="noopener">Terms & Conditions</a></div>
+    </div>
+  </div>
+
+  <script>
+    let completeFormData = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Prefer latest dataset (email step)
+      const raw = localStorage.getItem('completeEmailFormData') || localStorage.getItem('completeMatchConfirmationData');
+      if (raw) completeFormData = JSON.parse(raw);
+
+      // Personalize title using first name if derivable
+      const title = document.getElementById('welcomeTitle');
+      const name = extractFirstName(completeFormData);
+      title.textContent = name ? `Welcome back, ${name}` : 'Welcome back';
+
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    });
+
+    function extractFirstName(data) {
+      if (data.firstName) return data.firstName;
+      if (data.name) return data.name.split(' ')[0];
+      if (data.email && data.email.includes('@')) {
+        const local = data.email.split('@')[0];
+        const guess = local.replace(/[^a-zA-Z]/g, ' ').trim();
+        return guess ? guess.split(' ')[0].replace(/^\w/, c => c.toUpperCase()) : '';
+      }
+      return '';
+    }
+
+    function goBack() { window.location.href = 'email.html'; }
+
+    function submitRequest() {
+      // Persist the final dataset (no changes on this screen)
+      localStorage.setItem('finalSubmissionData', JSON.stringify(completeFormData));
+      window.location.href = 'phone.html';
+    }
+
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

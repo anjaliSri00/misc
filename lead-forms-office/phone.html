@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phone Number</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; background-image: url('assets/int11.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #fff; width: 720px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 78%; height: 100%; background: #3b82f6; }
+    h2 { text-align: center; font-size: 36px; margin: 8px 0 8px; color: #0f172a; }
+    .subtitle { text-align: center; color: #374151; margin-bottom: 20px; font-size: 18px; }
+    .input-wrap { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; background: #fff; }
+    .input-wrap input { width: 100%; border: none; outline: none; font-size: 18px; }
+    .navigation { display: flex; justify-content: space-between; margin-top: 24px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #e9ecef; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+    .error { color: #b91c1c; font-size: 13px; margin-top: 8px; display: none; }
+  </style>
+  <script src="config.js"></script>
+
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+
+      <h2>Your number is safe with us.</h2>
+      <div class="subtitle">Some matches prefer to provide quotes over the phone to get more details.</div>
+
+      <div class="input-wrap">
+        <input id="phoneInput" type="tel" placeholder="Enter your phone number" autocomplete="tel" />
+      </div>
+      <div id="error" class="error">Please enter a valid phone number.</div>
+
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button id="continueBtn" class="btn btn-primary" disabled onclick="continueToNext()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+ <script>
+let previousFormData = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const fromPrev = localStorage.getItem('completeEmailFormData');
+  const fromThis = localStorage.getItem('completePhoneFormData');
+  const raw = fromThis || fromPrev;
+  if (raw) previousFormData = JSON.parse(raw);
+
+  const phoneInput = document.getElementById('phoneInput');
+  const continueBtn = document.getElementById('continueBtn');
+  const errorEl = document.getElementById('error');
+
+  if (previousFormData.phone) {
+    const normalized = normalizeIndianNumber(previousFormData.phone);
+    phoneInput.value = formatIndianNumber(normalized);
+    continueBtn.disabled = !isValidPhone(normalized);
+  }
+
+  phoneInput.addEventListener('input', () => {
+    const normalized = normalizeIndianNumber(phoneInput.value);
+    phoneInput.value = formatIndianNumber(normalized);
+    const valid = isValidPhone(normalized);
+    errorEl.style.display = normalized && !valid ? 'block' : 'none';
+    continueBtn.disabled = !valid;
+  });
+
+  document.querySelector('.close').addEventListener('click', closeModal);
+  document.querySelector('.overlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+});
+
+function isValidPhone(value) {
+  return /^[6-9][0-9]{9}$/.test(value);
+}
+
+function normalizeIndianNumber(value) {
+  let digits = String(value).replace(/\D/g, '');
+  if (digits.startsWith('91') && digits.length > 10) digits = digits.slice(-10);
+  if (digits.startsWith('0') && digits.length > 10) digits = digits.replace(/^0+/, '');
+  if (digits.length > 10) digits = digits.slice(-10);
+  return digits;
+}
+
+function formatIndianNumber(digits) {
+  if (!digits) return '';
+  const trimmed = digits.slice(0, 10);
+  if (trimmed.length <= 5) return trimmed;
+  return `${trimmed.slice(0,5)} ${trimmed.slice(5)}`;
+}
+
+// 🔥 OTP API call
+async function callOtpApi(payload) {
+  const res = await fetch(`${CONFIG.API.BASE_URL}/api/v1/common/otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  return await res.json();
+}
+
+async function continueToNext() {
+  const normalized = normalizeIndianNumber(
+    document.getElementById('phoneInput').value.trim()
+  );
+
+  if (!isValidPhone(normalized)) return;
+
+  const completeFormData = { ...previousFormData, phone: normalized };
+  localStorage.setItem('completePhoneFormData', JSON.stringify(completeFormData));
+
+  try {
+    document.getElementById('continueBtn').disabled = true;
+
+    const response = await callOtpApi({
+      mobile: normalized,
+      action: "generate"
+    });
+
+    if (response.meta?.status == 200) {
+    localStorage.setItem("otp_session_id", response.data.session_id);
+    window.location.href = 'otp.html';
+    }else{
+      // alert("OTP send failed");
+      document.getElementById('continueBtn').disabled = false;
+      return;
+    }
+
+
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error while sending OTP");
+    document.getElementById('continueBtn').disabled = false;
+  }
+}
+
+function goBack() { window.location.href = 'email.html'; }
+function closeModal() {}
+</script>
+
+</body>
+</html>

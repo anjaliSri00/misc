@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Details</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+    .modal { background: #fff; width: 720px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 100%; height: 100%; background: #3b82f6; }
+    .success { display: flex; align-items: center; gap: 10px; color: #10b981; font-weight: 700; margin-bottom: 8px; }
+    .success .dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; }
+    h2 { font-size: 28px; margin: 8px 0 6px; color: #0f172a; text-align: center; }
+    .subtitle { text-align: center; color: #374151; margin-bottom: 18px; font-size: 16px; }
+    textarea { width: 100%; min-height: 140px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; font-size: 16px; box-sizing: border-box; resize: vertical; }
+    .file-row { margin-top: 12px; background: #eef2ff; border: 1px solid #dbeafe; color: #1d4ed8; padding: 12px 14px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .file-row:hover { background: #e0e7ff; }
+    .privacy { font-size: 13px; color: #6b7280; margin-top: 8px; }
+    .privacy a { color: #2563eb; text-decoration: underline; }
+    .quality { margin-top: 18px; }
+    .quality .title { font-weight: 700; color: #111827; margin-bottom: 6px; }
+    .quality .bar { height: 8px; border-radius: 6px; background: #ffe6cc; overflow: hidden; }
+    .quality .bar .fill { height: 100%; width: 20%; background: #ff8a00; }
+    .quality .hint { color: #f97316; margin-top: 8px; font-weight: 600; }
+    .asap { display: flex; align-items: center; gap: 10px; margin-top: 14px; background: #ff8a00; color: #111827; padding: 12px 14px; border-radius: 12px; }
+    .asap input { width: 18px; height: 18px; }
+    .actions { display: flex; justify-content: flex-end; margin-top: 18px; }
+    .btn-primary { background: #10b981; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    .btn-primary:hover { background: #059669; }
+    .files-list { margin-top: 8px; font-size: 14px; color: #374151; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+
+      <div class="success"><span class="dot"></span>We've posted your request</div>
+      <h2>Describe your request in detail</h2>
+      <div class="subtitle">Add more details to get faster and more accurate quotes</div>
+
+      <textarea id="details" placeholder="What would be helpful for the professional to know?"></textarea>
+
+      <div id="addFiles" class="file-row">+ Add photos/files</div>
+      <input id="fileInput" type="file" multiple style="display:none" />
+      <div id="filesList" class="files-list"></div>
+
+      <div class="privacy">Protected under our <a href="#" target="_blank" rel="noopener">privacy policy</a></div>
+
+      <div class="quality">
+        <div class="title">Quality score</div>
+        <div class="bar"><div class="fill" id="qualityFill"></div></div>
+        <div class="hint" id="qualityHint">Add more detail to improve your request</div>
+      </div>
+
+      <label class="asap">
+        <input id="asap" type="checkbox" />
+        <span>Let professionals know I want to be contacted ASAP</span>
+      </label>
+
+      <div class="actions">
+        <button class="btn-primary" onclick="submitRequest()">View matches</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let previousFormData = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load the latest dataset
+      const raw = localStorage.getItem('completeNameFormData') || localStorage.getItem('completePhoneFormData');
+      if (raw) previousFormData = JSON.parse(raw);
+
+      const addFiles = document.getElementById('addFiles');
+      const fileInput = document.getElementById('fileInput');
+      const filesList = document.getElementById('filesList');
+
+      addFiles.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', () => {
+        if (!fileInput.files || fileInput.files.length === 0) {
+          filesList.textContent = '';
+          return;
+        }
+        const names = Array.from(fileInput.files).map(f => f.name).join(', ');
+        filesList.textContent = names;
+      });
+
+      const details = document.getElementById('details');
+      const qualityFill = document.getElementById('qualityFill');
+      const qualityHint = document.getElementById('qualityHint');
+
+      function updateQuality() {
+        const len = (details.value || '').trim().length;
+        const pct = Math.max(20, Math.min(100, Math.round((len / 300) * 100)));
+        qualityFill.style.width = pct + '%';
+        qualityHint.textContent = pct < 60 ? 'Add more detail to improve your request' : 'Great detail! You are likely to get faster responses';
+      }
+
+      details.addEventListener('input', updateQuality);
+      updateQuality();
+
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    });
+
+    function submitRequest() {
+      const details = document.getElementById('details').value.trim();
+      const asap = document.getElementById('asap').checked;
+      const fileInput = document.getElementById('fileInput');
+
+      const files = fileInput.files ? Array.from(fileInput.files).map(f => ({ name: f.name, size: f.size })) : [];
+
+      const payload = { ...previousFormData, details, asap, files };
+      localStorage.setItem('requestDetailsFormData', JSON.stringify(payload));
+      window.location.href = 'success.html';
+    }
+
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

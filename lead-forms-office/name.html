@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="config.js"></script>
+  <title>Your Name</title>
+  <style>
+    /* Your existing CSS remains the same */
+    body { font-family: Arial, sans-serif; background: #f0f2f5; background-image: url('assets/int9.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #fff; width: 720px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 98%; height: 100%; background: #3b82f6; }
+    h1 { text-align: center; font-size: 40px; margin: 8px 0 20px; color: #0f172a; }
+    .label { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+    .input-wrap { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; background: #fff; }
+    .input-wrap input { width: 100%; border: none; outline: none; font-size: 18px; }
+    .checkbox { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+    .checkbox input { width: 20px; height: 20px; }
+    .navigation { display: flex; justify-content: space-between; margin-top: 24px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #e9ecef; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+    .terms { text-align: center; color: #6b7280; margin-top: 18px; font-size: 13px; }
+    .terms a { color: #374151; text-decoration: underline; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+
+      <h1>What is your name?</h1>
+      <div class="label">Please tell us your name:</div>
+      <div class="input-wrap">
+        <input id="nameInput" type="text" placeholder="Full name" autocomplete="name" />
+      </div>
+
+      <label class="checkbox">
+        <input id="marketingOptIn" type="checkbox" checked />
+        <span>I am happy to receive occasional marketing emails</span>
+      </label>
+
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="goBack()" id="backBtn">Back</button>
+        <button id="continueBtn" class="btn btn-primary" disabled onclick="continueToNext()">Submit</button>
+      </div>
+
+      <div class="terms">By continuing, you confirm your agreement to our <a href="#" target="_blank" rel="noopener">Terms & Conditions</a></div>
+    </div>
+  </div>
+
+  <script>
+    let previousFormData = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const raw = localStorage.getItem('completeNameFormData') || localStorage.getItem('completePhoneFormData') || localStorage.getItem('completeEmailFormData');
+      if (raw) previousFormData = JSON.parse(raw);
+
+      const nameInput = document.getElementById('nameInput');
+      const continueBtn = document.getElementById('continueBtn');
+      const marketingOptIn = document.getElementById('marketingOptIn');
+
+      if (previousFormData.name) {
+        nameInput.value = previousFormData.name;
+        continueBtn.disabled = nameInput.value.trim().length < 2;
+      }
+      if (typeof previousFormData.marketingOptIn === 'boolean') {
+        marketingOptIn.checked = previousFormData.marketingOptIn;
+      }
+
+      nameInput.addEventListener('input', () => {
+        continueBtn.disabled = nameInput.value.trim().length < 2;
+      });
+
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    });
+
+    async function continueToNext() {
+      const name = document.getElementById('nameInput').value.trim();
+      const marketingOptIn = document.getElementById('marketingOptIn').checked;
+      if (name.length < 2) return;
+      
+      // Collect all form data from different localStorage keys
+      const allFormData = {};
+      
+      // Collect from all available form data keys in order
+      const formDataKeys = [
+        'serviceFormData',
+        'projectType',
+        'propertyType',
+        'completeAreaFormData',
+        'completeBudgetFormData',
+        'completeHiringFormData',
+        'locationData',
+        'completeEmailFormData',
+        'completePhoneFormData',
+        'completeNameFormData'
+      ];
+      
+      // Helper function to merge objects without overwriting existing values
+      function mergeData(target, source) {
+        if (!source || typeof source !== 'object') return;
+        Object.keys(source).forEach(key => {
+          if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
+            target[key] = source[key];
+          }
+        });
+      }
+      
+      formDataKeys.forEach(key => {
+        try {
+          const data = localStorage.getItem(key);
+          if (data) {
+            const parsed = JSON.parse(data);
+            mergeData(allFormData, parsed);
+          }
+        } catch (e) {
+          console.warn('Failed to parse localStorage key:', key, e);
+        }
+      });
+      
+      // Add current form data
+      mergeData(allFormData, { name, marketingOptIn });
+      allFormData.name = name;
+      // Store the complete data
+      localStorage.setItem('completeNameFormData', JSON.stringify(allFormData));
+      
+      console.log('Collected all form data:', allFormData);
+      
+      // Show loading state
+      const continueBtn = document.getElementById('continueBtn');
+      const backBtn = document.getElementById('backBtn');
+      const originalText = continueBtn.textContent;
+      
+      continueBtn.disabled = true;
+      continueBtn.textContent = CONFIG.UI.LOADING_TEXT;
+      backBtn.disabled = true;
+      
+      // Helper function to map frontend service values to backend values
+      function mapServiceType(serviceType) {
+        const mapping = {
+          'complete project': 'complete project',
+          'design only': 'design only',
+          'supervision only': 'supervision only'
+        };
+        return mapping[serviceType] || serviceType || 'complete project';
+      }
+      
+      // Helper function to map frontend project type values to backend values
+      function mapProjectType(projectType) {
+        const mapping = {
+          'New Property': 'new property',
+          'Existing Property': 'existing property',
+          'Other': 'other'
+        };
+        return mapping[projectType] || projectType || 'new property';
+      }
+      
+      // Helper function to map property type
+      function mapPropertyType(propertyType) {
+        const mapping = {
+          'House': 'house',
+          'Flat': 'flat',
+          'Other': 'other'
+        };
+        return mapping[propertyType] || propertyType || 'house';
+      }
+
+
+      
+      // Helper function to clean area size
+      function cleanAreaSize(areaSize) {
+        if (!areaSize) return 'Upto 499 sq. ft.';
+        // Remove any "Upto" and just keep the value
+        return areaSize.replace('Upto ', '') || areaSize;
+      }
+      
+      // Helper function to clean budget
+      function cleanBudget(budget) {
+        if (!budget) return 'Upto Rs.4.9 per sq.ft.';
+        // Convert to proper format if needed
+        if (budget.includes('discuss-with-professional')) {
+          return 'discuss with professional';
+        }
+        return budget;
+      }
+      
+      try {
+        // Build the final data object with all collected data
+        const finalData = {
+          name: name ,
+          phone: allFormData.phone || '',
+          email: allFormData.email || '',
+          city: allFormData.city || '',
+          state: allFormData.state || '',
+          pincode: allFormData.pincode || '',
+          serviceType: allFormData.serviceType || '',
+          projectType: allFormData.projectType || '',
+          propertyType: allFormData.propertyType || '',
+          areaSize: allFormData.areaSize || '',
+          budget: allFormData.budget || '',
+          hiringDecision: allFormData.hiringDecision || ''
+        };
+        
+        console.log('Final data before mapping:', finalData);
+        
+        // Map to backend fields using CONFIG
+        const backendFormData = {};
+        
+        for (const [backendField, config] of Object.entries(CONFIG.FORM.FIELDS)) {
+          const source = config.source;
+          let value = finalData[source];
+          
+          // Apply transformations for specific fields
+          switch(backendField) {
+            case 'type_of_service':
+              value = mapServiceType(value);
+              break;
+            case 'project_type':
+              value = mapProjectType(value);
+              break;
+            case 'property_type':
+              value = mapPropertyType(value);
+              break;
+            case 'property_size':
+              value = cleanAreaSize(value);
+              break;
+            case 'budget':
+              value = cleanBudget(value);
+              break;
+            case 'hiring_decision':
+              value = value || 'ready-to-hire-now';
+              break;
+            case 'customer_contact':
+              // Clean phone number
+              value = (value || '').replace(/^\+91/, '').replace(/\D/g, '').slice(0, 10);
+              break;
+            case 'city':
+              value = value || 'Gurgaon'; // Default fallback
+              break;
+            case 'state':
+              value = value || 'Haryana'; // Default fallback
+              break;
+            case 'pincode':
+              value = value || '122001'; // Default fallback
+              break;
+          }
+          
+          // Only add if we have a value (or it's required)
+          if (value !== undefined && value !== '') {
+            backendFormData[backendField] = value;
+          }
+        }
+        
+        
+        // Validate required fields
+        const requiredFields = CONFIG.FORM.VALIDATION.REQUIRED_FIELDS;
+        const missingFields = requiredFields.filter(field => {
+          const value = backendFormData[field];
+          return !value || value.toString().trim() === '';
+        });
+
+        if (missingFields.length > 0) {
+          console.error('Missing required fields:', missingFields);
+          alert('Missing required fields: ' + missingFields.join(', ') + '\n\nPlease complete all form steps before submitting.');
+          
+          // Reset button state
+          continueBtn.disabled = false;
+          continueBtn.textContent = originalText;
+          backBtn.disabled = false;
+          return;
+        }
+
+        // Submit form data to backend
+        const response = await fetch(CONFIG.API.BASE_URL + CONFIG.API.ENDPOINTS.LEADS.FORM, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(backendFormData)
+        });
+        
+        console.log('Response status:', response.status);
+        
+        if (response.ok) {
+          console.log('Form submitted successfully');
+          
+          // Clear localStorage after successful submission (optional)
+          // localStorage.clear();
+          
+          window.location.href = CONFIG.UI.SUCCESS_REDIRECT;
+        } else {
+          let errorMessage = 'Unknown error';
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || JSON.stringify(errorData);
+          } catch (e) {
+            errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+          }
+          
+          console.error('Server error:', errorMessage);
+          alert('Error submitting form: ' + errorMessage);
+          
+          // Reset button state
+          continueBtn.disabled = false;
+          continueBtn.textContent = originalText;
+          backBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Network error. Please check your connection and try again.');
+        
+        // Reset button state
+        continueBtn.disabled = false;
+        continueBtn.textContent = originalText;
+        backBtn.disabled = false;
+      }
+    }
+
+    function goBack() { window.location.href = 'phone.html'; }
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

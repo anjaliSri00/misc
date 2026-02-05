@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Code</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #fff; width: 720px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 95%; height: 100%; background: #3b82f6; }
+    .success { display: flex; align-items: center; gap: 10px; color: #10b981; font-weight: 700; margin-bottom: 8px; }
+    .success .dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; }
+    h2 { text-align: center; font-size: 36px; margin: 8px 0 12px; color: #0f172a; }
+    .subtitle { text-align: center; color: #374151; margin-bottom: 18px; font-size: 18px; }
+    .inputs { display: flex; justify-content: center; gap: 16px; margin: 10px 0 18px; }
+    .inputs input { width: 72px; height: 72px; text-align: center; font-size: 32px; border-radius: 10px; border: 1px solid #e5e7eb; outline: none; }
+    .inputs input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+    .muted { text-align: center; color: #374151; font-size: 16px; }
+    .link { color: #1d4ed8; cursor: pointer; text-decoration: underline; }
+    .footer { display: flex; justify-content: space-between; margin-top: 22px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: 1px solid #d1d5db; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; }
+    .btn-primary { background: #3b82f6; color: #fff; border: none; }
+    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+  </style>
+  <script src="config.js"></script>
+
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+
+      <div class="success"><span class="dot"></span>We've posted your request</div>
+      <h2>Log into your account</h2>
+      <div class="subtitle">Enter the 6 digit code we sent by SMS to your number ending in <strong id="last6">******</strong></div>
+
+      <div class="inputs">
+        <input type="text" inputmode="numeric" maxlength="1" id="d1">
+        <input type="text" inputmode="numeric" maxlength="1" id="d2">
+        <input type="text" inputmode="numeric" maxlength="1" id="d3">
+        <input type="text" inputmode="numeric" maxlength="1" id="d4">
+        <input type="text" inputmode="numeric" maxlength="1" id="d5">
+        <input type="text" inputmode="numeric" maxlength="1" id="d6">
+      </div>
+
+      <div class="muted">Didn't receive a code? <span id="resend" class="link">Resend</span> <span id="countdown"></span></div>
+      <div class="muted" style="margin-top:8px;">We've also sent you an email with a login link or <a class="link" href="#">log in manually</a></div>
+
+      <div class="footer">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button id="continueBtn" class="btn btn-primary" disabled onclick="verify()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    async function callOtpApi(payload) {
+  const res = await fetch(`${CONFIG.API.BASE_URL}/api/v1/common/otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  return await res.json();
+}
+
+
+    let completeFormData = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const raw = localStorage.getItem('finalSubmissionData') || localStorage.getItem('completePhoneFormData') || localStorage.getItem('completeEmailFormData');
+      if (raw) completeFormData = JSON.parse(raw);
+
+      const last6El = document.getElementById('last6');
+      if (completeFormData.phone) {
+        const digits = completeFormData.phone.replace(/\D/g, '');
+        last6El.textContent = digits.slice(-6).padStart(6, '*');
+      }
+
+      setupInputs();
+      setupResend();
+
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    });
+
+    function setupInputs() {
+      const inputs = Array.from(document.querySelectorAll('.inputs input'));
+      inputs.forEach((input, idx) => {
+        input.addEventListener('input', (e) => {
+          e.target.value = e.target.value.replace(/\D/g, '').slice(0,1);
+          if (e.target.value && idx < inputs.length - 1) inputs[idx+1].focus();
+          toggleContinue();
+        });
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && idx > 0) inputs[idx-1].focus();
+        });
+      });
+
+      // Paste handler for entire code
+      inputs[0].addEventListener('paste', (e) => {
+        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0,6);
+        if (text) {
+          e.preventDefault();
+          for (let i = 0; i < inputs.length; i++) inputs[i].value = text[i] || '';
+          if (text.length === 6) inputs[5].focus();
+          toggleContinue();
+        }
+      });
+    }
+
+    function toggleContinue() {
+      const code = getCode();
+      document.getElementById('continueBtn').disabled = code.length !== 6;
+    }
+
+    function getCode() {
+      return [d1.value, d2.value, d3.value, d4.value,d5.value,d6.value].join('');
+    }
+
+    function setupResend() {
+      const resend = document.getElementById('resend');
+      const countdown = document.getElementById('countdown');
+      let seconds = 30;
+      countdown.textContent = `(00:${String(seconds).padStart(2,'0')})`;
+      resend.style.pointerEvents = 'none';
+      resend.style.color = '#9ca3af';
+      const timer = setInterval(() => {
+        seconds--;
+        countdown.textContent = `(00:${String(seconds).padStart(2,'0')})`;
+        if (seconds <= 0) {
+          clearInterval(timer);
+          countdown.textContent = '';
+          resend.style.pointerEvents = 'auto';
+          resend.style.color = '#1d4ed8';
+        }
+      }, 1000);
+     resend.addEventListener('click', async () => {
+  try {
+    const res = await callOtpApi({
+      mobile: completeFormData.phone,
+      action: "generate"
+    });
+
+    if (res.status === 200) {
+      localStorage.setItem("otp_session_id", res.data.session_id);
+      alert("OTP resent successfully");
+      setupResend();
+    } else {
+      alert("Failed to resend OTP");
+    }
+  } catch (e) {
+    alert("Server error");
+  }
+}, { once: true });
+
+    }
+
+   async function verify() {
+  const code = getCode();
+  if (code.length !== 6) {
+    alert('Please enter the 6 digit code.');
+    return;
+  }
+
+  const session_id = localStorage.getItem("otp_session_id");
+  const phone = completeFormData.phone;
+
+  try {
+    const response = await callOtpApi({
+      mobile: phone,
+      action: "verify",
+      otp: code,
+      session_id: session_id
+    });
+
+    if (response.meta?.status !== 200) {
+      alert("Invalid OTP");
+      return;
+    }
+
+    // OTP verified successfully
+    localStorage.setItem("otp_verified", "true");
+
+    window.location.href = 'name.html';
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error while verifying OTP");
+  }
+}
+
+    function goBack() { window.location.href = 'phone.html'; }
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

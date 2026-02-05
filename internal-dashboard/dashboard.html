@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO Meta Tags -->
+    <title>Vendor Management Dashboard | Internal Admin Portal - Business Analytics</title>
+    <meta name="description"
+        content="Comprehensive vendor management dashboard with advanced analytics, real-time data visualization, and secure administrative controls for business operations.">
+    <meta name="keywords"
+        content="vendor management, business dashboard, analytics, admin portal, data visualization, business intelligence, vendor analytics">
+    <meta name="author" content="Internal Dashboard Team">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="application-name" content="Vendor Management Dashboard">
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="webapp">
+    <meta property="og:title" content="Vendor Management Dashboard - Internal Admin Portal">
+    <meta property="og:description"
+        content="Advanced vendor management system with comprehensive analytics and real-time business intelligence.">
+    <meta property="og:url" content="/internal-dashboard/dashboard.html">
+    <meta property="og:site_name" content="Internal Dashboard">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vendor Management Dashboard">
+    <meta name="twitter:description" content="Advanced vendor management system with comprehensive analytics.">
+
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🏢</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🏢</text></svg>">
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="http://localhost:3000" crossorigin>
+    <link rel="dns-prefetch" href="http://localhost:3000">
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://api-urban.zuhouz.com;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <!-- X-Frame-Options removed - should be set via HTTP headers, not meta tags -->
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Vendor Management Dashboard",
+        "description": "Advanced vendor management system with comprehensive analytics and business intelligence",
+        "url": "/internal-dashboard/dashboard.html",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "permissions": "AdminAccess",
+        "features": [
+            "Vendor Management",
+            "Business Analytics",
+            "Data Visualization", 
+            "Real-time Reporting",
+            "Administrative Controls"
+        ],
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="/internal-dashboard/dashboard.html">
+
+    <!-- Performance Optimizations -->
+    <link rel="preload" href="dashboard-styles.css" as="style">
+    <link rel="preload" href="dashboard-script.js" as="script">
+    <script src="config.js"></script>
+
+    <link rel="stylesheet" href="dashboard-styles.css">
+</head>
+
+<body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading dashboard...</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Mobile Header with Hamburger Menu -->
+        <header class="mobile-header" role="banner">
+            <div class="mobile-header-content">
+                <button id="mobileMenuToggle" class="mobile-menu-toggle" aria-label="Toggle navigation menu"
+                    aria-expanded="false" aria-controls="sidebar">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <h1 class="mobile-title">
+                    <span class="mobile-logo" aria-hidden="true">🏢</span>
+                    <span id="mobilePageTitle">Vendor Management</span>
+                </h1>
+                <div class="mobile-user-actions">
+                    <div class="mobile-session-timer" id="mobileSessionTimer" aria-live="polite">
+                        <span id="mobileSessionTimeRemaining">30:00</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <h2>
+                        <!-- <span aria-hidden="true">🏢</span> -->
+                        <img src="../frontend/image/logo.png" alt="Logo">
+                        <!-- <span style="font-size: 2.2rem; font-style: italic;">urbn.</span> -->
+                    </h2>
+                </div>
+                <button id="sidebarClose" class="sidebar-close" aria-label="Close navigation menu">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul role="menubar">
+                    <li role="none">
+                        <a href="#" id="vendorsTab" class="nav-item active" role="menuitem" aria-current="page"
+                            tabindex="0">
+                            <span class="nav-icon" aria-hidden="true">👥</span>
+                            <span class="nav-text">Vendors</span>
+                        </a>
+                    </li>
+                    <li role="none">
+                        <a href="#" id="partnersTab" class="nav-item" role="menuitem" tabindex="-1">
+                            <span class="nav-icon" aria-hidden="true">🤝</span>
+                            <span class="nav-text">Partners</span>
+                        </a>
+                    </li>
+                    <li role="none">
+                        <a href="#" id="leadsTab" class="nav-item" role="menuitem" tabindex="-1">
+                            <span class="nav-icon" aria-hidden="true">📊</span>
+                            <span class="nav-text">Leads</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <footer class="sidebar-footer">
+                <div class="user-info">
+                    <span id="userNameDisplay" role="status">Welcome back!</span>
+                    <div class="session-timer" aria-live="polite">
+                        Session: <time id="sessionTimeRemaining">30:00</time>
+                    </div>
+                </div>
+                <button id="logoutButton" class="logout-btn" aria-label="Logout from dashboard">
+                    <span aria-hidden="true">🚪</span>
+                    <span>Logout</span>
+                </button>
+            </footer>
+        </aside>
+
+        <!-- Mobile Overlay -->
+        <div id="mobileOverlay" class="mobile-overlay" aria-hidden="true"></div>
+
+        <!-- Main Content -->
+        <main id="main-content" class="main-content" role="main">
+            <div class="content-header">
+                <h1 id="pageTitle">Vendor Management</h1>
+                <div class="header-actions">
+                    <span id="lastUpdated" class="last-updated" aria-live="polite"></span>
+                </div>
+            </div>
+
+            <!-- Vendor List Section -->
+            <section id="vendorListSection" class="content-section" aria-labelledby="vendor-list-title">
+                <header class="section-header">
+                    <h2 id="vendor-list-title" class="sr-only">Vendor List Management</h2>
+                    <div class="search-controls" style="display: flex; align-items: flex-end; gap: 1rem; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+                      <div class="search-input-wrapper">
+                        <label for="searchInput" class="sr-only">Search vendors</label>
+                        <input type="search" id="searchInput" placeholder="Search vendors..." class="search-input"
+                            autocomplete="off" aria-describedby="search-help">
+                        <button id="clearSearchBtn" class="clear-btn" style="display: none;"
+                            aria-label="Clear search">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div id="search-help" class="sr-only">Search by vendor name, email, city, or any other field</div>
+                      <!-- Filter controls moved here -->
+                      <div class="filter-controls" id="filterControls" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: nowrap; margin: 0; background: none; box-shadow: none; padding: 0; border-radius: 0;">
+                        <div class="filter-group" style="display: flex; flex-direction: column;">
+                          <select id="companyStatusFilter" class="search-input" style="height: 47px; min-height: 40px; line-height: 40px; font-size: 1rem; padding: 0 14px; box-sizing: border-box;">
+                            <option value="">Mode of Work Execution</option>
+                          </select>
+                        </div>
+                        <div class="filter-group" style="display: flex; flex-direction: column;">
+                          <select id="cityFilter" class="search-input" style="height: 47px; min-height: 40px; line-height: 40px; font-size: 1rem; padding: 0 14px; box-sizing: border-box;">
+                            <option value="">City</option>
+                          </select>
+                        </div>
+                        <div class="filter-group" style="display: flex; flex-direction: column;">
+                          <select id="itemsInterestedFilter" class="search-input" style="height: 47px; min-height: 40px; line-height: 40px; font-size: 1rem; padding: 0 14px; box-sizing: border-box;">
+                            <option value="">Category of Work</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="exportCSVBtn" class="btn btn-primary" aria-label="Export vendor data as CSV">
+                            <span aria-hidden="true">📊</span>
+                            <span>Export CSV</span>
+                        </button>
+                    
+                    </div>
+                </header>
+
+                <div class="table-wrapper">
+                    <div class="table-container" role="region" aria-labelledby="vendors-table-caption" tabindex="0">
+                        <table id="vendorsTable" class="vendors-table" role="table">
+                            <caption id="vendors-table-caption" class="sr-only">
+                                Vendor management table with sortable columns. Use arrow keys to navigate.
+                            </caption>
+                            <thead role="rowgroup">
+                                <tr role="row">
+                                    <th role="columnheader" scope="col">Sr No.</th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="id" tabindex="0"
+                                        aria-sort="none">
+                                        Vendor ID
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="firm_name"
+                                        tabindex="0" aria-sort="none">
+                                        Firm Name
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable"
+                                        data-column="contact_person_name" tabindex="0" aria-sort="none">
+                                        Contact Person
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="email"
+                                        tabindex="0" aria-sort="none">
+                                        Email Address
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="mobile"
+                                        tabindex="0" aria-sort="none">
+                                        Mobile No.
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="city" tabindex="0"
+                                        aria-sort="none">
+                                        City
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="company_status"
+                                        tabindex="0" aria-sort="none">
+                                        Mode of Work Execution
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vendorsTableBody" role="rowgroup">
+                                <!-- Vendor rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="loadingMessage" class="loading-message" style="display: none;" role="status"
+                    aria-live="polite">
+                    <div class="loading-spinner-small">
+                        <div class="spinner-small"></div>
+                    </div>
+                    <p>Loading vendors...</p>
+                </div>
+
+                <div id="noDataMessage" class="no-data-message" style="display: none;" role="status">
+                    <div class="no-data-icon" aria-hidden="true">📋</div>
+                    <h3>No vendors found</h3>
+                    <p>Try adjusting your search criteria or clear filters to see all vendors.</p>
+                    <button id="clearFiltersBtn" class="btn btn-secondary" style="display: none;">
+                        Clear search to see all vendors
+                    </button>
+                </div>
+
+                <!-- Pagination -->
+                <nav id="paginationContainer" class="pagination-container" aria-label="Vendor list pagination">
+                    <div class="pagination-info" role="status" aria-live="polite">
+                        <span id="paginationInfo">Showing 1 to 10 of 0 results</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <label for="itemsPerPageSelect" class="sr-only">Items per page</label>
+                        <select id="itemsPerPageSelect" class="items-per-page">
+                            <option value="10">10 per page</option>
+                            <option value="25">25 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <div class="pagination-buttons">
+                            <button id="prevPageBtn" class="pagination-btn" aria-label="Go to previous page">
+                                <span aria-hidden="true">‹</span>
+                                <span>Previous</span>
+                            </button>
+                            <div id="pageNumbers" class="page-numbers" role="group" aria-label="Page navigation"></div>
+                            <button id="nextPageBtn" class="pagination-btn" aria-label="Go to next page">
+                                <span>Next</span>
+                                <span aria-hidden="true">›</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            </section>
+
+            <!-- Partners List Section -->
+            <section id="partnerListSection" class="content-section" aria-labelledby="partner-list-title" style="display: none;">
+                <header class="section-header">
+                    <h2 id="partner-list-title" class="sr-only">Partners List Management</h2>
+                    <div class="search-controls" style="display: flex; align-items: flex-end; gap: 1rem; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+                        <div class="search-input-wrapper">
+                            <label for="partnerSearchInput" class="sr-only">Search partners</label>
+                            <input type="search" id="partnerSearchInput" placeholder="Search partners..." class="search-input"
+                                autocomplete="off" aria-describedby="partner-search-help">
+                            <button id="partnerClearSearchBtn" class="clear-btn" style="display: none;"
+                                aria-label="Clear search">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="partner-search-help" class="sr-only">Search by partner name, mobile, or city</div>
+                    </div>
+                </header>
+
+                <div class="table-wrapper">
+                    <div class="table-container" role="region" aria-labelledby="partners-table-caption" tabindex="0">
+                        <table id="partnersTable" class="vendors-table" role="table">
+                            <caption id="partners-table-caption" class="sr-only">
+                                Partners management table with sortable columns. Use arrow keys to navigate.
+                            </caption>
+                            <thead role="rowgroup">
+                                <tr role="row">
+                                    <th role="columnheader" scope="col">Sr No.</th>
+                                    <th role="columnheader" scope="col">Partner ID</th>
+                                    <th role="columnheader" scope="col">Name</th>
+                                    <th role="columnheader" scope="col">Mobile</th>
+                                    <th role="columnheader" scope="col">City</th>
+                                    <th role="columnheader" scope="col">Categories</th>
+                                    <th role="columnheader" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="partnersTableBody" role="rowgroup">
+                                <!-- Partner rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="partnerLoadingMessage" class="loading-message" style="display: none;" role="status" aria-live="polite">
+                    <div class="loading-spinner-small">
+                        <div class="spinner-small"></div>
+                    </div>
+                    <p>Loading partners...</p>
+                </div>
+
+                <div id="partnerNoDataMessage" class="no-data-message" style="display: none;" role="status">
+                    <div class="no-data-icon" aria-hidden="true">📋</div>
+                    <h3>No partners found</h3>
+                    <p>Try adjusting your search criteria to see more partners.</p>
+                    <button id="partnerClearFiltersBtn" class="btn btn-secondary" style="display: none;">
+                        Clear search to see all partners
+                    </button>
+                </div>
+
+                <!-- Pagination -->
+                <nav id="partnerPaginationContainer" class="pagination-container" aria-label="Partner list pagination">
+                    <div class="pagination-info" role="status" aria-live="polite">
+                        <span id="partnerPaginationInfo">Showing 1 to 10 of 0 results</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <label for="partnerItemsPerPageSelect" class="sr-only">Items per page</label>
+                        <select id="partnerItemsPerPageSelect" class="items-per-page">
+                            <option value="10">10 per page</option>
+                            <option value="25">25 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <div class="pagination-buttons">
+                            <button id="partnerPrevPageBtn" class="pagination-btn" aria-label="Go to previous page">
+                                <span aria-hidden="true">‹</span>
+                                <span>Previous</span>
+                            </button>
+                            <div id="partnerPageNumbers" class="page-numbers" role="group" aria-label="Page navigation"></div>
+                            <button id="partnerNextPageBtn" class="pagination-btn" aria-label="Go to next page">
+                                <span>Next</span>
+                                <span aria-hidden="true">›</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            </section>
+
+         
+            <!-- Vendor Details Section -->
+            <section id="vendorDetailsSection" class="content-section" style="display: none;"
+                aria-labelledby="vendor-details-title">
+                <header class="section-header">
+                    <button id="backToVendorsBtn" class="btn btn-secondary" aria-label="Back to vendor list">
+                        <span aria-hidden="true">←</span>
+                        <span>Back to Vendors</span>
+                    </button>
+                    <h2 id="vendor-details-title">Vendor Details</h2>
+                    <div></div>
+                </header>
+
+                <div id="vendorDetailsContent" class="vendor-details" role="region"
+                    aria-labelledby="vendor-details-title">
+                    <!-- Vendor details will be inserted here -->
+                </div>
+
+                <div id="vendorDetailsLoading" class="loading-message" style="display: none;" role="status"
+                    aria-live="polite">
+                    <div class="loading-spinner-small">
+                        <div class="spinner-small"></div>
+                    </div>
+                    <p>Loading vendor details...</p>
+                </div>
+            </section>
+
+            <!-- Partner Details Section -->
+            <section id="partnerDetailsSection" class="content-section" style="display: none;" aria-labelledby="partner-details-title">
+                <header class="section-header">
+                    <button id="backToPartnersBtn" class="btn btn-secondary" aria-label="Back to partners list">
+                        <span aria-hidden="true">←</span>
+                        <span>Back to Partners</span>
+                    </button>
+                    <h2 id="partner-details-title">Partner Details</h2>
+                    <div></div>
+                </header>
+
+                <div id="partnerDetailsContent" class="vendor-details" role="region" aria-labelledby="partner-details-title">
+                    <!-- Partner details will be inserted here -->
+                </div>
+
+                <div id="partnerDetailsLoading" class="loading-message" style="display: none;" role="status" aria-live="polite">
+                    <div class="loading-spinner-small">
+                        <div class="spinner-small"></div>
+                    </div>
+                    <p>Loading partner details...</p>
+                </div>
+            </section>
+
+            <!-- Leads List Section -->
+            <section id="leadListSection" class="content-section" aria-labelledby="lead-list-title" style="display: none;">
+                <header class="section-header">
+                    <h2 id="lead-list-title" class="sr-only">Leads List Management</h2>
+                    <div class="search-controls" style="display: flex; align-items: flex-end; gap: 1rem; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+                        <div class="search-input-wrapper">
+                            <label for="leadSearchInput" class="sr-only">Search leads</label>
+                            <input type="search" id="leadSearchInput" placeholder="Search leads..." class="search-input"
+                                autocomplete="off" aria-describedby="lead-search-help">
+                            <button id="leadClearSearchBtn" class="clear-btn" style="display: none;"
+                                aria-label="Clear search">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="lead-search-help" class="sr-only">Search by lead name, email, mobile, city, or any other field</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="leadExportCSVBtn" class="btn btn-primary" aria-label="Export lead data as CSV">
+                            <span aria-hidden="true">📊</span>
+                            <span>Export CSV</span>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="table-wrapper">
+                    <div class="table-container" role="region" aria-labelledby="leads-table-caption" tabindex="0">
+                        <table id="leadsTable" class="vendors-table" role="table">
+                            <caption id="leads-table-caption" class="sr-only">
+                                Leads management table with sortable columns. Use arrow keys to navigate.
+                            </caption>
+                            <thead role="rowgroup">
+                                <tr role="row">
+                                    <th role="columnheader" scope="col">Sr No.</th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="id" tabindex="0"
+                                        aria-sort="none">
+                                        Lead ID
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="name"
+                                        tabindex="0" aria-sort="none">
+                                        Name
+                                        <span class="sort-icon" aria-sort="none">
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="email"
+                                        tabindex="0" aria-sort="none">
+                                        Email Address
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="mobile"
+                                        tabindex="0" aria-sort="none">
+                                        Mobile No.
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="city" tabindex="0"
+                                        aria-sort="none">
+                                        City
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="interior_service"
+                                        tabindex="0" aria-sort="none">
+                                        Service Type
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="type_of_project"
+                                        tabindex="0" aria-sort="none">
+                                        Project Type
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col" class="sortable" data-column="created_at"
+                                        tabindex="0" aria-sort="none">
+                                        Created Date
+                                        <span class="sort-icon" aria-hidden="true">↕️</span>
+                                    </th>
+                                    <th role="columnheader" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadsTableBody" role="rowgroup">
+                                <!-- Lead rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="leadLoadingMessage" class="loading-message" style="display: none;" role="status"
+                    aria-live="polite">
+                    <div class="loading-spinner-small">
+                        <div class="spinner-small"></div>
+                    </div>
+                    <p>Loading leads...</p>
+                </div>
+
+                <div id="leadNoDataMessage" class="no-data-message" style="display: none;" role="status">
+                    <div class="no-data-icon" aria-hidden="true">📋</div>
+                    <h3>No leads found</h3>
+                    <p>Try adjusting your search criteria or clear filters to see all leads.</p>
+                    <button id="leadClearFiltersBtn" class="btn btn-secondary" style="display: none;">
+                        Clear search to see all leads
+                    </button>
+                </div>
+
+                <!-- Pagination -->
+                <nav id="leadPaginationContainer" class="pagination-container" aria-label="Lead list pagination">
+                    <div class="pagination-info" role="status" aria-live="polite">
+                        <span id="leadPaginationInfo">Showing 1 to 10 of 0 results</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <label for="leadItemsPerPageSelect" class="sr-only">Items per page</label>
+                        <select id="leadItemsPerPageSelect" class="items-per-page">
+                            <option value="10">10 per page</option>
+                            <option value="25">25 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <div class="pagination-buttons">
+                            <button id="leadPrevPageBtn" class="pagination-btn" aria-label="Go to previous page">
+                                <span aria-hidden="true">‹</span>
+                                <span>Previous</span>
+                            </button>
+                            <div id="leadPageNumbers" class="page-numbers" role="group" aria-label="Page navigation"></div>
+                            <button id="leadNextPageBtn" class="pagination-btn" aria-label="Go to next page">
+                                <span>Next</span>
+                                <span aria-hidden="true">›</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            </section>
+
+            <!-- Lead Details Section -->
+            <section id="leadDetailsSection" class="content-section" style="display: none;" aria-labelledby="lead-details-title">
+                <header class="section-header">
+                    <button id="backToLeadsBtn" class="btn btn-secondary" aria-label="Back to leads list">
+                        <span aria-hidden="true">←</span>
+                        <span>Back to Leads</span>
+                    </button>
+                    <h2 id="lead-details-title">Lead Details</h2>
+                    <div></div>
+                </header>
+
+                <div id="leadDetailsContent" class="vendor-details" role="region" aria-labelledby="lead-details-title">
+                    <!-- Lead details will be inserted here -->
+                </div>
+
+                <div id="leadDetailsLoading" class="loading-message" style="display: none;" role="status" aria-live="polite">
+                    <div class="loading-spinner-small">
+                        <div class="spinner-small"></div>
+                    </div>
+                    <p>Loading lead details...</p>
+                </div>
+            </section>
+
+            <!-- Toast Messages -->
+            <div id="errorMessage" class="toast-message error-message" style="display: none;" role="alert"
+                aria-live="assertive">
+                <div class="toast-content">
+                    <div class="toast-icon" aria-hidden="true">⚠️</div>
+                    <span id="errorText"></span>
+                    <button id="closeErrorBtn" class="toast-close" aria-label="Close error message">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="successMessage" class="toast-message success-message" style="display: none;" role="alert"
+                aria-live="polite">
+                <div class="toast-content">
+                    <div class="toast-icon" aria-hidden="true">✅</div>
+                    <span id="successText"></span>
+                    <button id="closeSuccessBtn" class="toast-close" aria-label="Close success message">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Service Worker Registration - Temporarily disabled for debugging -->
+    <!-- <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {
+                    // Silently fail if service worker is not available
+                });
+            });
+        }
+    </script> -->
+
+    <script src="dashboard-script.js" defer></script>
+    <script defer>
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Remove loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                setTimeout(() => {
+                    loadingOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 300);
+                }, 500);
+            }
+
+            // Check if user is logged in
+            const sessionData = localStorage.getItem('dashboardSession');
+            // console.log('Dashboard loading - Session data:', sessionData);
+
+            if (!sessionData) {
+                // console.log('No session data found, redirecting to login');
+                alert('No session found. Redirecting to login page.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                const session = JSON.parse(sessionData);
+                // console.log('Parsed session:', session);
+                // console.log('Current time:', Date.now());
+                // console.log('Session expiry:', session.expiryTime);
+
+                if (Date.now() >= session.expiryTime) {
+                    // console.log('Session expired, redirecting to login');
+                    localStorage.removeItem('dashboardSession');
+                    alert('Session expired. Please login again.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // console.log('Session valid, initializing dashboard');
+
+                // Initialize mobile navigation
+                try {
+                    // console.log('Initializing mobile navigation...');
+                    initializeMobileNavigation();
+                    // console.log('Mobile navigation initialized successfully');
+                } catch (error) {
+                    console.error('Mobile navigation initialization failed:', error);
+                }
+
+                // Initialize dashboard
+                try {
+                    // console.log('Initializing VendorDashboard...');
+                    window.vendorDashboard = new VendorDashboard();
+                    // console.log('VendorDashboard initialized successfully');
+                } catch (error) {
+                    // console.error('VendorDashboard initialization failed:', error);
+                    alert('Dashboard initialization failed. Please refresh the page. Error: ' + error.message);
+                    // Don't throw - let other components initialize
+                }
+
+                // Initialize keyboard navigation
+                try {
+                    // console.log('Initializing keyboard navigation...');
+                    initializeKeyboardNavigation();
+                    // console.log('Keyboard navigation initialized successfully');
+                } catch (error) {
+                    console.error('Keyboard navigation initialization failed:', error);
+                }
+
+            } catch (error) {
+                // console.error('Session validation error:', error);
+                localStorage.removeItem('dashboardSession');
+                alert('Session validation failed. Please login again.');
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Mobile Navigation Functions
+        function initializeMobileNavigation() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            const sidebarClose = document.getElementById('sidebarClose');
+
+            function openMobileMenu() {
+                sidebar.classList.add('sidebar-open');
+                mobileOverlay.style.display = 'block';
+                mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                mobileOverlay.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('menu-open');
+
+                // Focus the close button for accessibility
+                sidebarClose.focus();
+            }
+
+            function closeMobileMenu() {
+                sidebar.classList.remove('sidebar-open');
+                mobileOverlay.style.display = 'none';
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                mobileOverlay.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('menu-open');
+
+                // Return focus to menu toggle
+                mobileMenuToggle.focus();
+            }
+
+            // Event listeners
+            mobileMenuToggle.addEventListener('click', openMobileMenu);
+            sidebarClose.addEventListener('click', closeMobileMenu);
+            mobileOverlay.addEventListener('click', closeMobileMenu);
+
+            // Close menu with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sidebar.classList.contains('sidebar-open')) {
+                    closeMobileMenu();
+                }
+            });
+
+            // Close menu when clicking nav items on mobile
+            sidebar.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        closeMobileMenu();
+                    }
+                });
+            });
+        }
+
+        // Keyboard Navigation
+        function initializeKeyboardNavigation() {
+            // Table keyboard navigation
+            const table = document.getElementById('vendorsTable');
+            if (table) {
+                table.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        const focused = document.activeElement;
+                        if (focused.classList.contains('sortable')) {
+                            e.preventDefault();
+                            focused.click();
+                        }
+                    }
+                });
+            }
+
+            // Sidebar navigation keyboard support
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const nextIndex = (index + 1) % navItems.length;
+                        navItems[nextIndex].focus();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prevIndex = (index - 1 + navItems.length) % navItems.length;
+                        navItems[prevIndex].focus();
+                    }
+                });
+            });
+        }
+
+        // Responsive utilities
+        function updateMobileTitle(title) {
+            const mobileTitle = document.getElementById('mobilePageTitle');
+            if (mobileTitle) {
+                mobileTitle.textContent = title;
+            }
+        }
+
+        // Update page title helper
+        function updatePageTitle(title) {
+            document.getElementById('pageTitle').textContent = title;
+            updateMobileTitle(title);
+            document.title = `${title} | Vendor Management Dashboard`;
+        }
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                // Recalculate layouts if needed
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        });
+    </script>
+    <style>
+@media (min-width: 1025px) {
+  .show-mobile-only {
+    display: none !important;
+  }
+}
+@media (max-width: 1024px) {
+  .show-mobile-only {
+    display: inline-flex !important;
+  }
+  .search-controls, .filter-controls {
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+}
+</style>
+</body>
+
+</html>

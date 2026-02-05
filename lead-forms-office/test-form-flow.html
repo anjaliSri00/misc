@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Form Flow</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .test-container { max-width: 800px; margin: 0 auto; }
+    .step { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+    .step h3 { margin-top: 0; color: #333; }
+    .data-display { background: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; }
+    .button { background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+    .button:hover { background: #0056b3; }
+    .success { background: #d4edda; border-color: #c3e6cb; }
+    .error { background: #f8d7da; border-color: #f5c6cb; }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>Test Form Flow</h1>
+    
+    <div class="step">
+      <h3>Step 1: Start Form</h3>
+      <p>Click the button below to start the form flow:</p>
+      <button class="button" onclick="startForm()">Start Form</button>
+      <div class="data-display" id="step1-data"></div>
+    </div>
+    
+    <div class="step">
+      <h3>Step 2: Check localStorage</h3>
+      <p>Click the button below to check what's in localStorage:</p>
+      <button class="button" onclick="checkLocalStorage()">Check localStorage</button>
+      <div class="data-display" id="step2-data"></div>
+    </div>
+    
+    <div class="step">
+      <h3>Step 3: Test API Submission</h3>
+      <p>Click the button below to test the API submission:</p>
+      <button class="button" onclick="testAPISubmission()">Test API</button>
+      <div class="data-display" id="step3-data"></div>
+    </div>
+    
+    <div class="step">
+      <h3>Step 4: Clear localStorage</h3>
+      <p>Click the button below to clear localStorage:</p>
+      <button class="button" onclick="clearLocalStorage()">Clear localStorage</button>
+      <div class="data-display" id="step4-data"></div>
+    </div>
+  </div>
+
+  <script>
+    function startForm() {
+      // Simulate starting the form by setting some initial data
+      const initialData = {
+        serviceType: 'office',
+        projectType: 'New Project',
+        areaSize: '1000-5000 sq. ft.',
+        budget: 'Rs.2000-3000 per sq.ft.',
+        hiringLikelihood: 'likely-to-hire',
+        location: 'Mumbai',
+        name: 'Test User',
+        email: 'test@example.com',
+        mobile: '+919876543210',
+        marketingOptIn: true
+      };
+      
+      // Store in localStorage
+      localStorage.setItem('testFormData', JSON.stringify(initialData));
+      
+      document.getElementById('step1-data').innerHTML = 'Form started! Data stored in localStorage.<br><br>' + 
+        '<strong>Stored data:</strong><br>' + JSON.stringify(initialData, null, 2);
+    }
+    
+    function checkLocalStorage() {
+      const allData = {};
+      Object.keys(localStorage).forEach(key => {
+        try {
+          const data = localStorage.getItem(key);
+          if (data) {
+            allData[key] = JSON.parse(data);
+          }
+        } catch (e) {
+          allData[key] = data;
+        }
+      });
+      
+      document.getElementById('step2-data').innerHTML = '<strong>All localStorage data:</strong><br>' + 
+        JSON.stringify(allData, null, 2);
+    }
+    
+    async function testAPISubmission() {
+      try {
+        // Get test data
+        const testData = localStorage.getItem('testFormData');
+        if (!testData) {
+          document.getElementById('step3-data').innerHTML = '<strong>Error:</strong> No test data found. Please start the form first.';
+          return;
+        }
+        
+        const formData = JSON.parse(testData);
+        
+        // Map to backend format
+        const backendFormData = {
+          interior_service: 'office',
+          type_of_project: 'new property',
+          property_size: '1000-5000 sq. ft.',
+          budget: 'Rs.2000-3000 per sq.ft.',
+          hiring_decision: 'likely-to-hire',
+          city: 'Mumbai',
+          name: 'Test User',
+          email: 'test@example.com',
+          mobile: '9876543210',
+          marketingOptIn: true
+        };
+        
+        document.getElementById('step3-data').innerHTML = '<strong>Submitting to API...</strong><br><br>' +
+          '<strong>Backend form data:</strong><br>' + JSON.stringify(backendFormData, null, 2);
+        
+        // Submit to API
+        const response = await fetch('http://localhost:3000/api/leads/form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(backendFormData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          document.getElementById('step3-data').innerHTML = '<strong>Success!</strong><br><br>' +
+            '<strong>Response:</strong><br>' + JSON.stringify(data, null, 2);
+        } else {
+          document.getElementById('step3-data').innerHTML = '<strong>Error!</strong><br><br>' +
+            '<strong>Status:</strong> ' + response.status + '<br>' +
+            '<strong>Response:</strong><br>' + JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        document.getElementById('step3-data').innerHTML = '<strong>Network Error:</strong><br>' + error.message;
+      }
+    }
+    
+    function clearLocalStorage() {
+      localStorage.clear();
+      document.getElementById('step4-data').innerHTML = 'localStorage cleared!';
+    }
+  </script>
+</body>
+</html>

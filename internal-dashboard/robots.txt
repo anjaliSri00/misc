@@ -1,0 +1,61 @@
+User-agent: *
+Disallow: /internal-dashboard/
+
+# Internal dashboard - not for public indexing
+# This is a private administrative interface
+
+User-agent: Googlebot
+Disallow: /internal-dashboard/
+
+User-agent: Bingbot
+Disallow: /internal-dashboard/
+
+User-agent: Slurp
+Disallow: /internal-dashboard/
+
+User-agent: DuckDuckBot
+Disallow: /internal-dashboard/
+
+User-agent: Baiduspider
+Disallow: /internal-dashboard/
+
+User-agent: YandexBot
+Disallow: /internal-dashboard/
+
+User-agent: facebookexternalhit
+Disallow: /internal-dashboard/
+
+User-agent: Twitterbot
+Disallow: /internal-dashboard/
+
+User-agent: LinkedInBot
+Disallow: /internal-dashboard/
+
+# Security scanners and crawlers
+User-agent: *scanner*
+Disallow: /
+
+User-agent: *crawler*
+Disallow: /
+
+User-agent: *bot*
+Disallow: /internal-dashboard/
+
+# Block common bad bots
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Rate limiting for legitimate crawlers
+Crawl-delay: 1
+
+# No sitemap provided for internal dashboard
+# Sitemap: 

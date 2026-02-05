@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Area Size Selection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      background-image: url('assets/int8.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Modal */
+    .modal {
+      background: #fff;
+      width: 450px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 24px;
+      position: relative;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress {
+      width: 85%; /* This step is 5/6 complete */
+      height: 100%;
+      background: #3b82f6;
+      transition: width 0.3s ease;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #1f2937;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option:hover {
+      border-color: #3b82f6;
+      background: #f8fafc;
+    }
+    .option.selected {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+    .option input {
+      margin-right: 12px;
+    }
+
+    .option input[type="text"] {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: transparent;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 16px;
+    }
+    .btn:hover {
+      background: #2563eb;
+    }
+    .btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #f8f9fa;
+      color: #333;
+      border: 2px solid #e9ecef;
+      margin-right: 12px;
+      width: auto;
+      padding: 12px 24px;
+    }
+    .btn-secondary:hover {
+      background: #e9ecef;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* Close button */
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #6b7280;
+    }
+    .close:hover {
+      color: #111827;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+
+      <div class="progress-bar">
+        <div class="progress" id="progressBar"></div>
+      </div>
+
+
+
+      <h2>Approx. how large is the area under consideration?</h2>
+
+
+      <label class="option" data-value="Upto 499 sq. ft.">
+        <input type="radio" name="areaSize" value="Upto 499 sq. ft.">
+       Upto 499 sq. ft.
+      </label>
+
+
+
+      <label class="option" data-value="500-999 sq. ft.">
+        <input type="radio" name="areaSize" value="5000-10000 sq. ft.">
+        500 - 999 sq. ft.
+      </label>
+      <label class="option" data-value="1000-1999 sq. ft.">
+        <input type="radio" name="areaSize" value="1000-1999 sq. ft.">
+        1000 - 1999 sq. ft.
+      </label>
+
+      <label class="option" data-value="2000-4999 sq. ft.">
+        <input type="radio" name="areaSize" value="2000-4999 sq. ft.">
+        2000 - 4999 sq. ft.
+      </label>
+
+      <label class="option" data-value="More than 10000 sq. ft.">
+        <input type="radio" name="areaSize" value="More than 10000 sq. ft.">
+        More than 5000 sq. ft.
+      </label>
+
+      <label class="option" data-value="other">
+        <input type="radio" name="areaSize" value="other">
+        <input type="text" placeholder="Other">
+      </label>
+
+      <div class="button-group">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button class="btn" id="continueBtn" disabled onclick="continueToNext()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let formData = {};
+    let previousFormData = {};
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Ensure continue button is disabled by default
+      document.getElementById('continueBtn').disabled = true;
+      
+      loadPreviousFormData();
+      setupEventListeners();
+    });
+
+    function loadPreviousFormData() {
+      // Get data from the previous forms
+      const fromPrev = localStorage.getItem('completePropertyFormData');
+      const backFromLater = localStorage.getItem('completeAreaFormData');
+      const raw = backFromLater || fromPrev;
+      if (raw) {
+        previousFormData = JSON.parse(raw);
+        
+
+
+        // Preselect area size if returning
+        if (previousFormData.areaSize) {
+          const value = previousFormData.areaSize;
+          const radio = document.querySelector(`label.option input[type=\"radio\"][value=\"${value}\"]`);
+          if (radio) {
+            const optionEl = radio.closest('.option');
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            optionEl.classList.add('selected');
+            radio.checked = true;
+            formData.areaSize = value;
+            if (value === 'other' && previousFormData.otherAreaSize) {
+              const otherInput = optionEl.querySelector('input[type=\"text\"]');
+              if (otherInput) otherInput.value = previousFormData.otherAreaSize;
+              formData.otherAreaSize = previousFormData.otherAreaSize;
+            }
+            document.getElementById('continueBtn').disabled = false;
+          }
+        }
+      }
+    }
+
+    function setupEventListeners() {
+      // Area size selection
+      document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', function() {
+          // Remove previous selection
+          document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+          // Add selection to clicked option
+          this.classList.add('selected');
+          
+          // Enable continue button
+          document.getElementById('continueBtn').disabled = false;
+          
+          // Store selection
+          const radio = this.querySelector('input[type="radio"]');
+          formData.areaSize = radio.value;
+          
+          // If "other" is selected, focus on text input
+          if (radio.value === 'other') {
+            const textInput = this.querySelector('input[type="text"]');
+            textInput.focus();
+            textInput.addEventListener('input', function() {
+              formData.otherAreaSize = this.value;
+            });
+          }
+        });
+      });
+
+      // Close button
+      document.querySelector('.close').addEventListener('click', closeModal);
+    }
+
+    function goBack() {
+      // Go back to the project type form
+      window.location.href = 'property-type.html';
+    }
+
+    function continueToNext() {
+      // Store the selected area size
+      console.log('Area size selected:', formData);
+      
+      // Combine all forms data
+      const completeFormData = {
+        ...previousFormData,
+        ...formData
+      };
+      
+      // Store complete data
+      localStorage.setItem('completeAreaFormData', JSON.stringify(completeFormData));
+      
+      // Redirect to the budget form
+      window.location.href = 'budget.html';
+    }
+
+    function closeModal() {
+      // Do nothing - stay on the same page
+      // This prevents the white screen issue when clicking outside
+    }
+
+    // Close modal when clicking outside
+    document.querySelector('.overlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

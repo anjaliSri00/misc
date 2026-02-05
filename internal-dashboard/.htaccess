@@ -1,0 +1,235 @@
+# Internal Dashboard - Security and Performance Configuration
+
+# =====================================================
+# SECURITY HEADERS
+# =====================================================
+
+# Prevent clickjacking
+Header always append X-Frame-Options DENY
+
+# Prevent MIME type sniffing
+Header always set X-Content-Type-Options nosniff
+
+# Enable XSS protection
+Header always set X-XSS-Protection "1; mode=block"
+
+# Referrer Policy
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+# Content Security Policy
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' http://localhost:3000; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+
+# Permissions Policy (formerly Feature Policy)
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()"
+
+# HSTS (HTTP Strict Transport Security) - Enable in production with HTTPS
+# Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+# Remove server information
+ServerTokens Prod
+Header unset Server
+Header unset X-Powered-By
+
+# =====================================================
+# PERFORMANCE OPTIMIZATIONS
+# =====================================================
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/ld+json
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # HTML files (short cache for dynamic content)
+    ExpiresByType text/html "access plus 1 hour"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # Images
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # Fonts
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # Other files
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/manifest+json "access plus 1 week"
+</IfModule>
+
+# Alternative cache headers if mod_expires is not available
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+    
+    <FilesMatch "\.(png|jpg|jpeg|gif|svg|webp|ico)$">
+        Header set Cache-Control "public, max-age=31536000"
+    </FilesMatch>
+    
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+</IfModule>
+
+# =====================================================
+# ACCESS CONTROL AND AUTHENTICATION
+# =====================================================
+
+# Protect sensitive files
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql|conf|bak)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block access to hidden files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# IP-based restrictions (uncomment and configure for production)
+# <RequireAll>
+#     Require ip 192.168.1
+#     Require ip 10.0.0
+#     Require ip 172.16.0
+# </RequireAll>
+
+# =====================================================
+# URL REWRITING AND REDIRECTS
+# =====================================================
+
+RewriteEngine On
+
+# Force HTTPS in production (uncomment when ready)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove trailing slashes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{THE_REQUEST} /+[^\s]*//
+RewriteRule ^(.*)$ /$1 [R=301,L]
+
+# Default document handling
+DirectoryIndex index.html
+
+# Custom error pages
+ErrorDocument 400 /internal-dashboard/error.html
+ErrorDocument 401 /internal-dashboard/error.html
+ErrorDocument 403 /internal-dashboard/error.html
+ErrorDocument 404 /internal-dashboard/error.html
+ErrorDocument 500 /internal-dashboard/error.html
+
+# =====================================================
+# MIME TYPES
+# =====================================================
+
+<IfModule mod_mime.c>
+    # Web fonts
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+    AddType application/vnd.ms-fontobject .eot
+    AddType font/ttf .ttf
+    AddType font/otf .otf
+    
+    # Web app manifest
+    AddType application/manifest+json .webmanifest
+    AddType application/x-web-app-manifest+json .webapp
+    
+    # Media types
+    AddType image/webp .webp
+    AddType image/svg+xml .svg
+    
+    # Text types
+    AddType text/cache-manifest .appcache
+</IfModule>
+
+# =====================================================
+# PERFORMANCE MONITORING
+# =====================================================
+
+# Enable server-timing headers for performance monitoring
+<IfModule mod_headers.c>
+    Header always set Server-Timing "total;dur=0"
+</IfModule>
+
+# =====================================================
+# CORS CONFIGURATION (if needed for API calls)
+# =====================================================
+
+# <IfModule mod_headers.c>
+#     Header set Access-Control-Allow-Origin "http://localhost:3000"
+#     Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+#     Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+#     Header set Access-Control-Allow-Credentials "true"
+# </IfModule>
+
+# =====================================================
+# RATE LIMITING (if mod_security is available)
+# =====================================================
+
+# <IfModule mod_security.c>
+#     SecRuleEngine On
+#     SecRule IP:REQUEST_COUNT "@gt 100" "phase:1,deny,msg:'Rate limit exceeded'"
+# </IfModule>
+
+# =====================================================
+# FILE UPLOAD RESTRICTIONS
+# =====================================================
+
+# Prevent execution of uploaded files
+<Directory "uploads/">
+    <FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</Directory>
+
+# Limit file upload size (if applicable)
+LimitRequestBody 10485760  # 10MB
+
+# =====================================================
+# LOGGING (adjust paths as needed)
+# =====================================================
+
+# LogLevel warn
+# ErrorLog /var/log/apache2/internal-dashboard-error.log
+# CustomLog /var/log/apache2/internal-dashboard-access.log combined
+
+# =====================================================
+# MAINTENANCE MODE (uncomment to enable)
+# =====================================================
+
+# RewriteCond %{REQUEST_URI} !/maintenance.html$
+# RewriteCond %{REMOTE_ADDR} !^192\.168\.1\.100$
+# RewriteRule ^(.*)$ /maintenance.html [R=503,L]
+# Header always set Retry-After "3600" 

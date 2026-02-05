@@ -1,0 +1,332 @@
+const CACHE_NAME = 'internal-dashboard-v1.0.0';
+const STATIC_CACHE_NAME = 'internal-dashboard-static-v1.0.0';
+const DYNAMIC_CACHE_NAME = 'internal-dashboard-dynamic-v1.0.0';
+
+// Files to cache for offline functionality
+const STATIC_ASSETS = [
+    '/internal-dashboard/',
+    '/internal-dashboard/index.html',
+    '/internal-dashboard/dashboard.html',
+    '/internal-dashboard/dashboard-styles.css',
+    '/internal-dashboard/dashboard-script.js',
+    '/internal-dashboard/script.js',
+    '/internal-dashboard/site.webmanifest'
+];
+
+// Network-first strategy URLs (API calls)
+const NETWORK_FIRST_URLS = [
+    '/api/',
+    'localhost:3000'
+];
+
+// Cache-first strategy for static assets
+const CACHE_FIRST_URLS = [
+    '.css',
+    '.js',
+    '.html',
+    '.webmanifest'
+];
+
+// Install event - cache static assets
+self.addEventListener('install', (event) => {
+    console.log('Service Worker: Installing...');
+    
+    event.waitUntil(
+        Promise.all([
+            caches.open(STATIC_CACHE_NAME).then((cache) => {
+                console.log('Service Worker: Caching static assets');
+                return cache.addAll(STATIC_ASSETS);
+            }),
+            self.skipWaiting()
+        ])
+    );
+});
+
+// Activate event - clean up old caches
+self.addEventListener('activate', (event) => {
+    console.log('Service Worker: Activating...');
+    
+    event.waitUntil(
+        Promise.all([
+            caches.keys().then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        if (cacheName !== STATIC_CACHE_NAME && 
+                            cacheName !== DYNAMIC_CACHE_NAME) {
+                            console.log('Service Worker: Deleting old cache:', cacheName);
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            }),
+            self.clients.claim()
+        ])
+    );
+});
+
+// Fetch event - implement caching strategies
+self.addEventListener('fetch', (event) => {
+    const request = event.request;
+    const url = new URL(request.url);
+    
+    // Skip non-GET requests
+    if (request.method !== 'GET') {
+        return;
+    }
+    
+    // Skip chrome-extension and other non-http(s) requests
+    if (!request.url.startsWith('http')) {
+        return;
+    }
+    
+    // Network-first strategy for API calls
+    if (NETWORK_FIRST_URLS.some(pattern => request.url.includes(pattern))) {
+        event.respondWith(networkFirstStrategy(request));
+        return;
+    }
+    
+    // Cache-first strategy for static assets
+    if (CACHE_FIRST_URLS.some(pattern => request.url.includes(pattern))) {
+        event.respondWith(cacheFirstStrategy(request));
+        return;
+    }
+    
+    // Stale-while-revalidate for other requests
+    event.respondWith(staleWhileRevalidateStrategy(request));
+});
+
+// Network-first strategy implementation
+async function networkFirstStrategy(request) {
+    try {
+        const networkResponse = await fetch(request);
+        
+        // Cache successful responses
+        if (networkResponse.status === 200) {
+            const cache = await caches.open(DYNAMIC_CACHE_NAME);
+            cache.put(request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+    } catch (error) {
+        console.log('Service Worker: Network failed, trying cache:', request.url);
+        
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+            return cachedResponse;
+        }
+        
+        // Return offline page for navigation requests
+        if (request.mode === 'navigate') {
+            return getOfflinePage();
+        }
+        
+        throw error;
+    }
+}
+
+// Cache-first strategy implementation
+async function cacheFirstStrategy(request) {
+    const cachedResponse = await caches.match(request);
+    
+    if (cachedResponse) {
+        return cachedResponse;
+    }
+    
+    try {
+        const networkResponse = await fetch(request);
+        
+        if (networkResponse.status === 200) {
+            const cache = await caches.open(STATIC_CACHE_NAME);
+            cache.put(request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+    } catch (error) {
+        console.log('Service Worker: Cache and network failed for:', request.url);
+        throw error;
+    }
+}
+
+// Stale-while-revalidate strategy implementation
+async function staleWhileRevalidateStrategy(request) {
+    const cachedResponse = await caches.match(request);
+    
+    const networkResponsePromise = fetch(request).then((networkResponse) => {
+        if (networkResponse.status === 200) {
+            const cache = caches.open(DYNAMIC_CACHE_NAME);
+            cache.then(c => c.put(request, networkResponse.clone()));
+        }
+        return networkResponse;
+    }).catch(() => {
+        console.log('Service Worker: Network failed for:', request.url);
+    });
+    
+    return cachedResponse || networkResponsePromise;
+}
+
+// Generate offline page
+function getOfflinePage() {
+    return new Response(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Offline - Internal Dashboard</title>
+            <style>
+                body {
+                    font-family: 'Segoe UI', system-ui, sans-serif;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    margin: 0;
+                    background: linear-gradient(135deg, #f0f0f0 0%, #e8f0fe 100%);
+                    color: #333;
+                }
+                .offline-container {
+                    text-align: center;
+                    padding: 2rem;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                    max-width: 400px;
+                    width: 90%;
+                }
+                .offline-icon {
+                    font-size: 4rem;
+                    margin-bottom: 1rem;
+                }
+                h1 {
+                    color: #5650DE;
+                    margin-bottom: 1rem;
+                    font-size: 1.5rem;
+                }
+                p {
+                    color: #666;
+                    line-height: 1.6;
+                    margin-bottom: 1.5rem;
+                }
+                .retry-btn {
+                    background: #5650DE;
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                }
+                .retry-btn:hover {
+                    background: #4640BE;
+                    transform: translateY(-1px);
+                }
+            </style>
+        </head>
+        <body>
+            <div class="offline-container">
+                <div class="offline-icon">📡</div>
+                <h1>You're Offline</h1>
+                <p>It looks like you're not connected to the internet. Please check your connection and try again.</p>
+                <button class="retry-btn" onclick="window.location.reload()">Retry</button>
+            </div>
+        </body>
+        </html>
+    `, {
+        headers: {
+            'Content-Type': 'text/html',
+        },
+    });
+}
+
+// Handle background sync for offline form submissions
+self.addEventListener('sync', (event) => {
+    if (event.tag === 'background-sync') {
+        console.log('Service Worker: Background sync triggered');
+        event.waitUntil(handleBackgroundSync());
+    }
+});
+
+async function handleBackgroundSync() {
+    // Handle any pending offline actions here
+    console.log('Service Worker: Handling background sync...');
+}
+
+// Handle push notifications (if needed in future)
+self.addEventListener('push', (event) => {
+    if (event.data) {
+        const data = event.data.json();
+        const options = {
+            body: data.body,
+            icon: '/internal-dashboard/icons/icon-192x192.png',
+            badge: '/internal-dashboard/icons/badge-72x72.png',
+            vibrate: [100, 50, 100],
+            data: {
+                url: data.url || '/internal-dashboard/'
+            },
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Open Dashboard',
+                    icon: '/internal-dashboard/icons/icon-192x192.png'
+                },
+                {
+                    action: 'close',
+                    title: 'Close',
+                    icon: '/internal-dashboard/icons/close-icon.png'
+                }
+            ]
+        };
+        
+        event.waitUntil(
+            self.registration.showNotification(data.title, options)
+        );
+    }
+});
+
+// Handle notification clicks
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    
+    const url = event.notification.data?.url || '/internal-dashboard/';
+    
+    event.waitUntil(
+        clients.openWindow(url)
+    );
+});
+
+// Periodic background sync (if needed)
+self.addEventListener('periodicsync', (event) => {
+    if (event.tag === 'update-data') {
+        event.waitUntil(updateDataInBackground());
+    }
+});
+
+async function updateDataInBackground() {
+    // Update critical data in background
+    console.log('Service Worker: Periodic background sync triggered');
+}
+
+// Handle errors
+self.addEventListener('error', (event) => {
+    console.error('Service Worker: Error occurred:', event.error);
+});
+
+self.addEventListener('unhandledrejection', (event) => {
+    console.error('Service Worker: Unhandled promise rejection:', event.reason);
+});
+
+// Performance monitoring
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'GET_VERSION') {
+        event.ports[0].postMessage({
+            version: CACHE_NAME
+        });
+    }
+    
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
+
+console.log('Service Worker: Registered successfully'); 

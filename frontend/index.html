@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Vendor Registration Form - Hindustan Copper Limited. Register as a vendor for India's leading copper mining enterprise.">
+    <meta name="keywords"
+        content="vendor registration, Hindustan Copper Limited, supplier registration, government enterprise, India">
+    <meta name="author" content="Hindustan Copper Limited">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Vendor Registration Form - Hindustan Copper Limited">
+    <meta property="og:description"
+        content="Register as a vendor with Hindustan Copper Limited, a Government of India Enterprise">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <title>Vendor Registration Form - Hindustan Copper Limited</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            /* max-width: 1200px; */
+            margin: 0 auto;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styles */
+        .header {
+           
+            padding: 0px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+          
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            /* gap: 15px; */
+        }
+        .company-info img{
+            width: 140px;
+            background-color: #fff;
+            height: 50px;
+        }
+
+        .form-title {
+            /* background-color: #8B4513; */
+            /* color: white; */
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 20px;
+            text-align: right;
+        }
+
+        /* Notice Banner */
+        .notice-banner {
+            background-color: #3a3a3a;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* Form Styles */
+        .form-container {
+            padding: 20px;
+            background-color: #F3DFC5;
+        }
+
+        .required-note {
+            text-align: right;
+            color: red;
+            font-size: 12px;
+            /* margin-bottom: 15px; */
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+
+        /* Fixed size for reference textareas */
+        #referenceCompany,
+        #referenceContactPerson,
+        #referenceEmail {
+            resize: none !important;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            background-color: #3a3a3a;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 20px 0 15px 0;
+        }
+
+        /* Multi-select Dropdown */
+        .multi-select {
+            position: relative;
+        }
+
+        .multi-select select {
+            height: 120px;
+        }
+
+        .multi-select select[multiple] option {
+            padding: 3px 8px;
+        }
+
+        .multi-select select[multiple] option:checked {
+            background-color: #3a3a3a;
+            color: white;
+        }
+
+        /* Vendor Section Specific Styles */
+        .vendor-section {
+            background-color: #F3DFC5;
+            padding: 0;
+            margin: 0;
+
+        }
+
+        .vendor-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 0;
+            min-height: 400px;
+        }
+
+        .vendor-column {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .vendor-col-1,
+        .vendor-col-2,
+        .vendor-col-3 {
+            border-right: 1px solid #c7c6c6;
+        }
+
+        .vendor-col-4 {
+            border-right: none;
+        }
+
+        .vendor-section .form-group {
+            margin-bottom: 0;
+        }
+
+        .vendor-section .form-group label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .vendor-section .form-group input,
+        .vendor-section .form-group select,
+        .vendor-section .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .checkbox-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            /* margin-bottom: 8px; */
+            padding: 3px 0;
+        }
+
+        .checkbox-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1.2;
+            margin-bottom: 0;
+            font-weight: lighter;
+        }
+
+        .checkbox-item:hover {
+            background-color: #e6e6e6;
+            border-radius: 3px;
+        }
+
+        .vendor-col-3 .form-group:last-child textarea {
+            height: 50px;
+            resize: vertical;
+        }
+
+        /* Responsive adjustments for vendor section */
+        @media (max-width: 1024px) {
+            .vendor-columns {
+                grid-template-columns: 1fr 1fr;
+                gap: 0;
+            }
+
+            .vendor-col-1,
+            .vendor-col-2 {
+                border-right: 1px solid #c7c6c6;
+                /* border-bottom: 2px solid #8B4513; */
+            }
+
+            .vendor-col-3,
+            .vendor-col-4 {
+                border-right: none;
+            }
+
+            .checkbox-container {
+                height: 200px;
+            }
+
+            .vendor-col-3 .form-group:last-child textarea {
+                height: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .vendor-columns {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .vendor-column {
+                border-right: none;
+                border-bottom: 2px solid transparent;
+            }
+
+            .vendor-col-4 {
+                border-bottom: none;
+            }
+
+            .checkbox-container {
+                height: 150px;
+            }
+
+            .vendor-col-3 .form-group:last-child textarea {
+                height: 60px;
+            }
+        }
+
+
+
+        /* Buttons */
+        .button-container {
+            text-align: center;
+            padding: 10px;
+            gap: 15px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            min-width: 100px;
+        }
+
+        .btn-submit {
+            background-color: #3a3a3a;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #3a3a3a;
+        }
+
+        .btn-cancel {
+            background-color: #666;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #555;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .form-title {
+                text-align: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .container {
+                margin: 10px;
+            }
+
+
+
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 10px;
+            }
+
+            .company-info h1 {
+                font-size: 18px;
+            }
+
+            .form-title {
+                font-size: 16px;
+            }
+
+            .logo {
+                width: 50px;
+                height: 50px;
+                font-size: 10px;
+            }
+        }
+
+        /* Focus states for accessibility */
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 1px solid #3a3a3a;
+            border-color: #3a3a3a;
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* File input styling */
+        .form-group input[type="file"] {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .form-group input[type="file"]:focus {
+            outline: 1px solid ;
+            border-color: #3a3a3a;
+        }
+
+        .form-group input[type="file"]::file-selector-button {
+            background-color: #3a3a3a;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        .form-group input[type="file"]::file-selector-button:hover {
+            background-color: #3a3a3a;
+        }
+
+        /* Multiple Upload Styling */
+        .multiple-upload-container {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .upload-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: white;
+            border-radius: 3px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .upload-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .upload-item input[type="file"] {
+            flex: 1;
+            margin: 0;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .add-upload-btn {
+            background-color: #3a3a3a;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .add-upload-btn:hover {
+            background-color: #3a3a3a;
+        }
+
+        .remove-upload-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 25px;
+            transition: background-color 0.3s;
+        }
+
+        .remove-upload-btn:hover {
+            background-color: #c82333;
+        }
+
+        .upload-progress {
+            font-size: 12px;
+        color: #3a3a3a;
+            margin-top: 2px;
+        }
+
+        .upload-success {
+            font-size: 12px;
+            color: green;
+            margin-top: 2px;
+        }
+
+        .upload-error {
+            font-size: 12px;
+            color: red;
+            margin-top: 2px;
+        }
+
+        /* Financial fields styling */
+        .form-group input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        /* Responsive adjustments for new sections */
+        @media (max-width: 768px) {
+            .upload-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .upload-item input[type="file"] {
+                margin-bottom: 5px;
+            }
+
+            .add-upload-btn,
+            .remove-upload-btn {
+                align-self: center;
+            }
+        }
+    </style>
+    <style>
+        :root {
+            --bw-black: #000;
+            --bw-white: #fff;
+            --bw-gray-100: #f9f9f9;
+            --bw-gray-200: #d4d4d4;
+            --bw-gray-300: #e6e6e6;
+            --bw-gray-600: #666;
+            --bw-gray-700: #555;
+            --bw-gray-800: #333;
+        }
+
+        body {
+            background-color: var(--bw-white) !important;
+            color: var(--bw-black) !important;
+        }
+
+        .logo {
+            color: var(--bw-black) !important;
+            background-color: var(--bw-white) !important;
+        }
+
+        .notice-banner {
+            background-color: var(--bw-black) !important;
+            color: var(--bw-white) !important;
+        }
+
+        .form-container {
+            background-color: var(--bw-white) !important;
+        }
+
+        .section-header {
+            background-color: var(--bw-black) !important;
+            color: var(--bw-white) !important;
+        }
+
+        .vendor-section {
+            background-color: var(--bw-white) !important;
+        }
+
+        .multi-select select[multiple] option:checked {
+            background-color: var(--bw-black) !important;
+            color: var(--bw-white) !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 1px solid var(--bw-black) !important;
+            border-color: var(--bw-black) !important;
+        }
+
+        .btn-submit {
+            background-color: var(--bw-black) !important;
+            color: var(--bw-white) !important;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--bw-gray-800) !important;
+        }
+
+        .btn-cancel {
+            background-color: var(--bw-gray-600) !important;
+        }
+
+        .btn-cancel:hover {
+            background-color: var(--bw-gray-700) !important;
+        }
+
+        .form-group input[type="file"]::file-selector-button {
+            background-color: var(--bw-black) !important;
+            color: var(--bw-white) !important;
+        }
+
+        .form-group input[type="file"]::file-selector-button:hover {
+            background-color: var(--bw-gray-800) !important;
+        }
+
+        .checkbox-container {
+            background-color: var(--bw-gray-100) !important;
+        }
+
+        .checkbox-item:hover {
+            background-color: var(--bw-gray-300) !important;
+        }
+
+        .upload-progress,
+        .upload-success,
+        .upload-error,
+        /* .required-note {
+            color: var(--bw-black) !important;
+        } */
+    </style>
+    <style>
+        :root {
+            /* Soften black to a lighter charcoal */
+            --bw-black: #444444;
+            --bw-gray-800: #2f2f2f;
+            --bw-gray-700: #3a3a3a;
+        }
+
+        /* Use light backgrounds for sections/banners with dark text */
+        .notice-banner,
+        .section-header {
+            background-color: var(--bw-gray-200) !important;
+            color: var(--bw-black) !important;
+        }
+
+        /* Buttons: softer charcoal primary */
+        .btn-submit {
+            background-color: var(--bw-black) !important;
+            color: #fff !important;
+        }
+        .btn-submit:hover {
+            background-color: var(--bw-gray-700) !important;
+        }
+
+        /* File button */
+        .form-group input[type="file"]::file-selector-button {
+            background-color: var(--bw-black) !important;
+            color: #fff !important;
+        }
+        .form-group input[type="file"]::file-selector-button:hover {
+            background-color: var(--bw-gray-700) !important;
+        }
+
+        /* Focus states remain but with softer color */
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 1px solid var(--bw-black) !important;
+            border-color: var(--bw-black) !important;
+        }
+    </style>
+    <style>
+        /***** Logo image sizing to match header *****/
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-right: 12px;
+            display: inline-block;
+        }
+        @media (max-width: 480px) {
+            .logo-img {
+                width: 48px;
+                height: 48px;
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-section">
+                <div class="company-info">
+                    <img src="image/urbanvillageindia.png" alt="Urban Village Logo" class="logo-img">
+                </div>
+            </div>
+            <div class="form-title">Vendor Registration Form</div>
+        </header>
+       
+        <!-- Form -->
+        <div class="form-container">
+
+            <div class="required-note">(*) Fields are Mandatory</div>
+
+            <!-- Notice Banner -->
+                <!-- <div class="notice-banner">
+                    Vendor Registration Form
+                </div> -->
+
+            <form id="vendorForm" novalidate>
+                <!-- Basic Information -->
+                <div class="section-header">Basic Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firmName">Name of Firm/Company <span class="required">(*)</span></label>
+                        <input type="text" id="firmName" name="firmName" required>
+                        <div class="error-message" id="firmNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firmType">Nature of Company Registration <span class="required">(*)</span></label>
+                        <select id="firmType" name="firmType" required>
+                            <option value="">--- Select ---</option>
+                            <option value="public_limited">Public Limited Co</option>
+                            <option value="private_limited">Private Limited Co</option>
+                            <option value="partnership">Partnership Co</option>
+                            <option value="proprietorship">Proprietorship</option>
+                            <option value="limited_liability_partnership">Limited Liability Partnership(LLP)</option>
+
+                            <option value="others">Others</option>
+                        </select>
+                        <div class="error-message" id="firmTypeError"></div>
+                    </div>
+                    <div class="form-group" id="firmTypeSpecifyField" style="display: none;">
+                        <label for="firmTypeSpecify">Please Specify <span class="required">(*)</span></label>
+                        <input type="text" id="firmTypeSpecify" name="firmTypeSpecify">
+                        <div class="error-message" id="firmTypeSpecifyError"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="country">Country <span class="required">(*)</span></label>
+                        <select id="country" name="country" required>
+                            <option value="India" selected>India</option>
+                            <option value="USA">USA</option>
+                            <option value="UK">UK</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Japan">Japan</option>
+                            <option value="China">China</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error-message" id="countryError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gstNo">GST No.<span class="required">(*)</span></label>
+                        <input type="text" id="gstNo" name="gstNo" required>
+                        <div class="error-message" id="gstNoError">This field is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="panNo">PAN No.<span class="required">(*)</span></label>
+                        <input type="text" id="panNo" name="panNo" required>
+                        <div class="error-message" id="panNoError">This field is required</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyStatus">Mode of Work Execution <span class="required">(*)</span></label>
+                        <select id="companyStatus" name="companyStatus" required>
+                            <option value="">--- Select ---</option>
+                            <option value="labour_supplier">Labour Supplier</option>
+                            <option value="contractor">Contractor</option>
+                            <option value="contractor_with_material">Contractor with Material</option>
+                            <!-- <option value="contractor_with_material_and_labour">Contractor with Material and Labour</option> -->
+                        </select>
+                        <div class="error-message" id="companyStatusError"></div>
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty space to match image layout -->
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty space to match image layout -->
+                    </div>
+                </div>
+
+                <!-- Details of Vendor Section -->
+                <div class="section-header">Details of Vendor</div>
+
+                <div class="vendor-section">
+                    <div class="vendor-columns">
+                        <!-- Column 1: Address, City, State, Country, Pin -->
+                        <div class="vendor-column vendor-col-1">
+                            <div class="form-group">
+                                <label for="address">Address <span class="required">(*)</span></label>
+                                <textarea id="address" name="address" required></textarea>
+                                <div class="error-message" id="addressError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city">
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State <span class="required">(*)</span></label>
+                                <select id="state" name="state" required>
+                                    <option value="">--- Select ---</option>
+                                    <option value="andhra_pradesh">Andhra Pradesh</option>
+                                    <option value="arunachal_pradesh">Arunachal Pradesh</option>
+                                    <option value="assam">Assam</option>
+                                    <option value="bihar">Bihar</option>
+                                    <option value="chhattisgarh">Chhattisgarh</option>
+                                    <option value="goa">Goa</option>
+                                    <option value="gujarat">Gujarat</option>
+                                    <option value="haryana">Haryana</option>
+                                    <option value="himachal_pradesh">Himachal Pradesh</option>
+                                    <option value="jharkhand">Jharkhand</option>
+                                    <option value="karnataka">Karnataka</option>
+                                    <option value="kerala">Kerala</option>
+                                    <option value="madhya_pradesh">Madhya Pradesh</option>
+                                    <option value="maharashtra">Maharashtra</option>
+                                    <option value="manipur">Manipur</option>
+                                    <option value="meghalaya">Meghalaya</option>
+                                    <option value="mizoram">Mizoram</option>
+                                    <option value="nagaland">Nagaland</option>
+                                    <option value="odisha">Odisha</option>
+                                    <option value="punjab">Punjab</option>
+                                    <option value="rajasthan">Rajasthan</option>
+                                    <option value="sikkim">Sikkim</option>
+                                    <option value="tamil_nadu">Tamil Nadu</option>
+                                    <option value="telangana">Telangana</option>
+                                    <option value="tripura">Tripura</option>
+                                    <option value="uttar_pradesh">Uttar Pradesh</option>
+                                    <option value="uttarakhand">Uttarakhand</option>
+                                    <option value="west_bengal">West Bengal</option>
+                                    <option value="delhi">Delhi</option>
+                                </select>
+                                <div class="error-message" id="stateError"></div>
+                            </div>
+                            <!-- <div class="form-group">
+                                <label for="vendorCountry">Country</label>
+                                <input type="text" id="vendorCountry" name="vendorCountry" value="India" readonly>
+                            </div> -->
+                            <div class="form-group">
+                                <label for="pin">Pin <span class="required">(*)</span></label>
+                                <input type="text" id="pin" name="pin" required>
+                                <div class="error-message" id="pinError"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: STD Code, Fax, Website, Mobile, Email -->
+                        <div class="vendor-column vendor-col-2">
+                            <div class="form-group">
+                                <label for="stdPhone">STD Code with Phone No.</label>
+                                <input type="tel" id="stdPhone" name="stdPhone" placeholder="e.g., 011-12345678">
+                                <div class="error-message" id="stdPhoneError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="fax">Fax</label>
+                                <input type="tel" id="fax" name="fax">
+                            </div>
+                            <div class="form-group">
+                                <label for="website">Website</label>
+                                <input type="url" id="website" name="website" placeholder="https://example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile">Mobile <span class="required">(*)</span></label>
+                                <input type="tel" id="mobile" name="mobile" required>
+                                <div class="error-message" id="mobileError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-mail <span class="required">(*)</span></label>
+                                <input type="email" id="email" name="email" required>
+                                <div class="error-message" id="emailError"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Contact Person, Designation, MSME, Business Description -->
+                        <div class="vendor-column vendor-col-3">
+                            <div class="form-group">
+                                <label for="contactPerson">Name of Contact Person <span
+                                        class="required">(*)</span></label>
+                                <input type="text" id="contactPerson" name="contactPerson" required>
+                                <div class="error-message" id="contactPersonError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="designation">Designation of Contact Person <span
+                                        class="required">(*)</span></label>
+                                <input type="text" id="designation" name="designation" required>
+                                <div class="error-message" id="designationError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="msme">Is your Firm MSME ? <span class="required">(*)</span></label>
+                                <select id="msme" name="msme" required>
+                                    <option value="">--- Select ---</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                                <div class="error-message" id="msmeError"></div>
+                            </div>
+                            <div class="form-group" id="msmeCertificateField" style="display: none;">
+                                <label for="msmeCertificate">Upload MSME Certificate <span
+                                        class="required">(*)</span></label>
+                                <input type="file" id="msmeCertificate" name="msmeCertificate"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                <div class="error-message" id="msmeCertificateError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="businessDescription">Brief Description of Business of your Company</label>
+                                <textarea id="businessDescription" name="businessDescription" rows="4"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Column 4: Type of Items Interested -->
+                        <div class="vendor-column vendor-col-4">
+                            <div class="form-group">
+                                <label for="itemsInterested">Category of Work <span
+                                        class="required">(*)</span></label>
+                                <div class="checkbox-container">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="select_all" name="itemsInterested"
+                                            value="select_all">
+                                        <label for="select_all">[Select all]</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="lowside_ac_works" name="itemsInterested"
+                                            value="lowside_ac_works">
+                                        <label for="lowside_ac_works">Lowside AC Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="highside_ac_works" name="itemsInterested"
+                                            value="highside_ac_works">
+                                        <label for="highside_ac_works">Highside AC Work </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="lowside_electrical_works" name="itemsInterested"
+                                            value="lowside_electrical_works">
+                                        <label for="lowside_electrical_works">Lowside Electrical Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="highside_electrical_works" name="itemsInterested"
+                                            value="highside_electrical_works">
+                                        <label for="highside_electrical_works">Highside Electrical Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="ms_fabrication" name="itemsInterested"
+                                            value="ms_fabrication">
+                                        <label for="ms_fabrication">MS Fabrication Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="plumbing" name="itemsInterested" value="plumbing">
+                                        <label for="plumbing">Plumbing Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="fire_fighting_works" name="itemsInterested"
+                                            value="fire_fighting_works">
+                                        <label for="fire_fighting_works">Fire Fighting Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="cctv_network_cabling_works" name="itemsInterested"
+                                            value="cctv_network_cabling_works">
+                                        <label for="cctv_network_cabling_works">CCTV Network Cabling Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="civil_works" name="itemsInterested"
+                                            value="civil_works">
+                                        <label for="civil_works">Civil Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="tile_stove_works" name="itemsInterested"
+                                            value="tile_stove_works">
+                                        <label for="tile_stove_works">Tile/ Stone Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="carpentenry_works" name="itemsInterested"
+                                            value="carpentenry_works">
+                                        <label for="carpentenry_works">Carpentenry Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="gypsum_works" name="itemsInterested"
+                                            value="gypsum_works">
+                                        <label for="gypsum_works">Gypsum Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="pop_works" name="itemsInterested" value="pop_works">
+                                        <label for="pop_works">POP Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="painting_coating_works" name="itemsInterested"
+                                            value="painting_coating_works">
+                                        <label for="painting_coating_works">Painting/Coating Work</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="other" name="itemsInterested" value="other">
+                                        <label for="other">Other</label>
+                                    </div>
+
+
+                                </div>
+                                <div class="error-message" id="itemsInterestedError"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Details Section -->
+                <div class="section-header">Bank Details</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bankName">Bank Name <span class="required">(*)</span></label>
+                        <select id="bankName" name="bankName" required>
+                            <option value="">--- Select Bank ---</option>
+                            <option value="loading">Loading banks...</option>
+                        </select>
+                        <div class="error-message" id="bankNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountNumber">Account Number <span class="required">(*)</span></label>
+                        <input type="text" id="accountNumber" name="accountNumber" required>
+                        <div class="error-message" id="accountNumberError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ifscCode">IFSC Code <span class="required">(*)</span></label>
+                        <input type="text" id="ifscCode" name="ifscCode" placeholder="e.g., SBIN0001234" required>
+                        <div class="error-message" id="ifscCodeError"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cancelledCheque">Upload Cancelled Cheque Copy <span
+                                class="required">(*)</span></label>
+                        <input type="file" id="cancelledCheque" name="cancelledCheque" accept=".pdf,.jpg,.jpeg,.png"
+                            required>
+                        <div class="error-message" id="cancelledChequeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountHolderName">Account Holder Name <span class="required">(*)</span></label>
+                        <input type="text" id="accountHolderName" name="accountHolderName" required>
+                        <div class="error-message" id="accountHolderNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty space to maintain grid layout -->
+                    </div>
+                </div>
+
+                <!-- Experience & Reference Section -->
+                <div class="section-header">Experience & Reference</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="experienceReference">Upload Experience & Reference Document</label>
+                        <input type="file" id="experienceReference" name="experienceReference"
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        <div class="error-message" id="experienceReferenceError"></div>
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty space to maintain grid layout -->
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty space to maintain grid layout -->
+                    </div>
+                </div>
+
+                <!-- Documents & Certificates Section -->
+                <div class="section-header">Documents & Certificates</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyProfile">Company Profile <span class="required">(*)</span></label>
+                        <input type="file" id="companyProfile" name="companyProfile" accept=".pdf,.doc,.docx" required>
+                        <div class="error-message" id="companyProfileError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="completionCertificate">Completion Certificate</label>
+                        <input type="file" id="completionCertificate" name="completionCertificate"
+                            accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="error-message" id="completionCertificateError"></div>
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty space to maintain grid layout -->
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Work Order/ Purchase Order</label>
+                        <div class="multiple-upload-container" id="workOrderContainer">
+                            <div class="upload-item">
+                                <input type="file" id="workOrder_1" name="workOrder[]" accept=".pdf,.jpg,.jpeg,.png">
+                                <button type="button" class="add-upload-btn"
+                                    onclick="addUploadField('workOrder', 'workOrderContainer', 5)">+</button>
+                            </div>
+                        </div>
+                        <div class="error-message" id="workOrderError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Past/Current Project Images (Max 10)</label>
+                        <div class="multiple-upload-container" id="projectImagesContainer">
+                            <div class="upload-item">
+                                <input type="file" id="projectImage_1" name="projectImages[]" accept=".jpg,.jpeg,.png">
+                                <button type="button" class="add-upload-btn"
+                                    onclick="addUploadField('projectImage', 'projectImagesContainer', 10)">+</button>
+                            </div>
+                        </div>
+                        <div class="error-message" id="projectImagesError"></div>
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty space to maintain grid layout -->
+                    </div>
+                </div>
+
+                <!-- Company Financial Details Section -->
+                <div class="section-header">Company Financial Details (3 Years)</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="financialYear1">Financial Year 1 <span class="required">(*)</span></label>
+                        <select id="financialYear1" name="financialYear1" required>
+                            <option value="">--- Select Year ---</option>
+                            <option value="2023-24">2023-24</option>
+                            <option value="2022-23">2022-23</option>
+                            <option value="2021-22">2021-22</option>
+                            <option value="2020-21">2020-21</option>
+                            <option value="2019-20">2019-20</option>
+                        </select>
+                        <div class="error-message" id="financialYear1Error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="financialYear2">Financial Year 2 <span class="required">(*)</span></label>
+                        <select id="financialYear2" name="financialYear2" required>
+                            <option value="">--- Select Year ---</option>
+                            <option value="2023-24">2023-24</option>
+                            <option value="2022-23">2022-23</option>
+                            <option value="2021-22">2021-22</option>
+                            <option value="2020-21">2020-21</option>
+                            <option value="2019-20">2019-20</option>
+                        </select>
+                        <div class="error-message" id="financialYear2Error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="financialYear3">Financial Year 3 <span class="required">(*)</span></label>
+                        <select id="financialYear3" name="financialYear3" required>
+                            <option value="">--- Select Year ---</option>
+                            <option value="2023-24">2023-24</option>
+                            <option value="2022-23">2022-23</option>
+                            <option value="2021-22">2021-22</option>
+                            <option value="2020-21">2020-21</option>
+                            <option value="2019-20">2019-20</option>
+                        </select>
+                        <div class="error-message" id="financialYear3Error"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="financialDocument1">Financial Documents Year 1 <span
+                                class="required">(*)</span></label>
+                        <input type="file" id="financialDocument1" name="financialDocument1"
+                            accept=".pdf,.jpg,.jpeg,.png" required>
+                        <div class="error-message" id="financialDocument1Error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="financialDocument2">Financial Documents Year 2 <span
+                                class="required">(*)</span></label>
+                        <input type="file" id="financialDocument2" name="financialDocument2"
+                            accept=".pdf,.jpg,.jpeg,.png" required>
+                        <div class="error-message" id="financialDocument2Error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="financialDocument3">Financial Documents Year 3 <span
+                                class="required">(*)</span></label>
+                        <input type="file" id="financialDocument3" name="financialDocument3"
+                            accept=".pdf,.jpg,.jpeg,.png" required>
+                        <div class="error-message" id="financialDocument3Error"></div>
+                    </div>
+                </div>
+
+
+
+                <!-- Buttons -->
+                <div class="button-container">
+                    <button type="submit" class="btn btn-submit">Submit</button>
+                    <button type="button" class="btn btn-cancel" onclick="resetForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>

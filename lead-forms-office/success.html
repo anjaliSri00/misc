@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Submitted</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #fff; width: 600px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 32px; text-align: center; position: relative; }
+    .check { width: 90px; height: 90px; border-radius: 50%; background: #10b981; color: #fff; display: grid; place-items: center; font-size: 48px; margin: 0 auto 16px; }
+    h2 { font-size: 26px; color: #0f172a; margin: 8px 0; }
+    p { color: #374151; margin: 0 0 18px; }
+    .btn { background: #10b981; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <div class="check">✓</div>
+      <h2>Your request is successfully submitted</h2>
+      <p>Thanks for reaching out. We'll get back to you soon.</p>
+      <p>You may visit our website <a href="https://zuhouz.com">zuhouz.com</a> or call us at <a href="tel:9967852454">9967852454</a></p>
+      <button class="btn" onclick="finish()">Close</button>
+    </div>
+  </div>
+  <script>
+    // Check if form was submitted successfully
+    document.addEventListener('DOMContentLoaded', () => {
+      const formData = localStorage.getItem('completeNameFormData');
+      if (!formData) {
+        // No form data found, redirect back to start
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // Clear form data after successful submission
+      localStorage.removeItem('completeNameFormData');
+      localStorage.removeItem('completePhoneFormData');
+      localStorage.removeItem('completeEmailFormData');
+      localStorage.removeItem('completeMatchConfirmationData');
+    });
+
+    function finish(){
+      // Close current tab if allowed, otherwise redirect to root
+      window.close();
+      if (!window.closed) {
+        window.location.href = '/lead-forms-office/index.html';
+      }
+    }
+  </script>
+</body>
+</html>

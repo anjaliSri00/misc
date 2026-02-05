@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm Phone Number</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #fff; width: 720px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 99%; height: 100%; background: #3b82f6; }
+    h2 { text-align: center; font-size: 36px; margin: 8px 0 12px; color: #0f172a; }
+    .subtitle { text-align: center; color: #374151; margin-bottom: 18px; font-size: 18px; }
+    .inputs { display: flex; justify-content: center; gap: 16px; margin: 10px 0 18px; }
+    .inputs input { width: 72px; height: 72px; text-align: center; font-size: 32px; border-radius: 10px; border: 1px solid #e5e7eb; outline: none; }
+    .inputs input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+    .muted { text-align: center; color: #374151; font-size: 16px; }
+    .link { color: #1d4ed8; cursor: pointer; text-decoration: underline; }
+    .footer { display: flex; justify-content: space-between; margin-top: 22px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: 1px solid #d1d5db; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; }
+    .btn-primary { background: #3b82f6; color: #fff; border: none; }
+    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+
+      <h2>Confirm your phone number</h2>
+      <div class="subtitle">Please enter the code we just sent to <strong id="maskedPhone">******</strong>.</div>
+
+      <div class="inputs">
+        <input type="text" inputmode="numeric" maxlength="1" id="d1">
+        <input type="text" inputmode="numeric" maxlength="1" id="d2">
+        <input type="text" inputmode="numeric" maxlength="1" id="d3">
+        <input type="text" inputmode="numeric" maxlength="1" id="d4">
+      </div>
+
+      <div class="muted">Didn't receive a code? <span id="resend" class="link">Resend</span> <span id="countdown"></span></div>
+
+      <div class="footer">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button id="confirmBtn" class="btn btn-primary" disabled onclick="verify()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let completeFormData = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const raw = localStorage.getItem('completeNameFormData') || localStorage.getItem('completePhoneFormData');
+      if (raw) completeFormData = JSON.parse(raw);
+
+      const maskedPhoneEl = document.getElementById('maskedPhone');
+      if (completeFormData.phone) {
+        const digits = completeFormData.phone.replace(/\D/g, '');
+        const last10 = digits.slice(-10);
+        maskedPhoneEl.textContent = `${last10.slice(0,5)} ${last10.slice(5)}`;
+      }
+
+      setupInputs();
+      setupResend();
+
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    });
+
+    function setupInputs() {
+      const inputs = Array.from(document.querySelectorAll('.inputs input'));
+      inputs.forEach((input, idx) => {
+        input.addEventListener('input', (e) => {
+          e.target.value = e.target.value.replace(/\D/g, '').slice(0,1);
+          if (e.target.value && idx < inputs.length - 1) inputs[idx+1].focus();
+          toggleConfirm();
+        });
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && idx > 0) inputs[idx-1].focus();
+        });
+      });
+
+      inputs[0].addEventListener('paste', (e) => {
+        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0,4);
+        if (text) {
+          e.preventDefault();
+          for (let i = 0; i < inputs.length; i++) inputs[i].value = text[i] || '';
+          if (text.length === 4) inputs[3].focus();
+          toggleConfirm();
+        }
+      });
+    }
+
+    function toggleConfirm() {
+      const code = getCode();
+      document.getElementById('confirmBtn').disabled = code.length !== 4;
+    }
+
+    function getCode() {
+      return [d1.value, d2.value, d3.value, d4.value].join('');
+    }
+
+    function setupResend() {
+      const resend = document.getElementById('resend');
+      const countdown = document.getElementById('countdown');
+      let seconds = 30;
+      countdown.textContent = `(00:${String(seconds).padStart(2,'0')})`;
+      resend.style.pointerEvents = 'none';
+      resend.style.color = '#9ca3af';
+      const timer = setInterval(() => {
+        seconds--;
+        countdown.textContent = `(00:${String(seconds).padStart(2,'0')})`;
+        if (seconds <= 0) {
+          clearInterval(timer);
+          countdown.textContent = '';
+          resend.style.pointerEvents = 'auto';
+          resend.style.color = '#1d4ed8';
+        }
+      }, 1000);
+      resend.addEventListener('click', () => {
+        alert('A new code has been sent.');
+        setupResend();
+      }, { once: true });
+    }
+
+    function verify() {
+      const code = getCode();
+      if (code.length === 4) {
+        window.location.href = 'request-details.html';
+      } else {
+        alert('Please enter the 4 digit code.');
+      }
+    }
+
+    function goBack() { window.location.href = 'name.html'; }
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

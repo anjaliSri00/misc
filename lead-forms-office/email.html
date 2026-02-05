@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Address</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; background-image: url('assets/int12.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; }
+    .modal { background: #fff; width: 600px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 30px; position: relative; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .progress { width: 70%; height: 100%; background: #3b82f6; }
+    h2 { margin: 0 0 16px; font-size: 28px; line-height: 1.25; text-align: center; color: #0f172a; }
+    .input-wrap { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; background: #fff; }
+    .input-wrap input { width: 100%; border: none; outline: none; font-size: 16px; }
+    .navigation { display: flex; justify-content: space-between; margin-top: 24px; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    .btn-secondary { background: #f8f9fa; color: #374151; border: 1px solid #d1d5db; }
+    .btn-secondary:hover { background: #e9ecef; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+    .close { position: absolute; top: 14px; right: 14px; font-size: 20px; color: #6b7280; cursor: pointer; }
+    .error { color: #b91c1c; font-size: 13px; margin-top: 8px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="modal">
+      <span class="close">&times;</span>
+      <div class="progress-bar"><div class="progress"></div></div>
+      <h2>What email address would you like quotes sent to?</h2>
+
+      <div class="input-wrap">
+        <input id="emailInput" type="email" placeholder="Email address" autocomplete="email" />
+      </div>
+      <div id="error" class="error">Please enter a valid email address.</div>
+
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        <button id="continueBtn" class="btn btn-primary" disabled onclick="continueToNext()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let previousFormData = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const fromPrev = localStorage.getItem('completeMatchConfirmationData');
+      const fromThis = localStorage.getItem('completeEmailFormData');
+      const raw = fromThis || fromPrev;
+      if (raw) previousFormData = JSON.parse(raw);
+
+      const emailInput = document.getElementById('emailInput');
+      const continueBtn = document.getElementById('continueBtn');
+      const errorEl = document.getElementById('error');
+
+      // Prefill if exists
+      if (previousFormData.email) {
+        emailInput.value = previousFormData.email;
+        continueBtn.disabled = !isValidEmail(previousFormData.email);
+      }
+
+      emailInput.addEventListener('input', () => {
+        const value = emailInput.value.trim();
+        const valid = isValidEmail(value);
+        errorEl.style.display = value && !valid ? 'block' : 'none';
+        continueBtn.disabled = !valid;
+      });
+
+      document.querySelector('.close').addEventListener('click', closeModal);
+      document.querySelector('.overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    });
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function continueToNext() {
+      const email = document.getElementById('emailInput').value.trim();
+      if (!isValidEmail(email)) return;
+      const completeFormData = { ...previousFormData, email };
+      localStorage.setItem('completeEmailFormData', JSON.stringify(completeFormData));
+      window.location.href = 'phone.html';
+    }
+
+    function goBack() { window.location.href = 'location.html'; }
+    function closeModal() { /* stay on page */ }
+  </script>
+</body>
+</html>

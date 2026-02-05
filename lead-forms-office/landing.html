@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interior Design Services</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      padding: 40px;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .btn-secondary {
+      background: #f8f9fa;
+      color: #333;
+      border: 2px solid #e9ecef;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .feature {
+      text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 15px;
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">ID</div>
+    <h1>Interior Design Services</h1>
+    <p>Transform your space with our professional interior design services. We specialize in creating beautiful, functional, and personalized interiors that reflect your style and needs.</p>
+    
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🎨</div>
+        <strong>Design</strong>
+        <p>Creative & innovative designs</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🏠</div>
+        <strong>Installation</strong>
+        <p>Professional installation</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">✨</div>
+        <strong>Complete</strong>
+        <p>End-to-end solutions</p>
+      </div>
+    </div>
+
+    <a href="index.html" class="btn">Start Your Project</a>
+    <a href="#" class="btn btn-secondary">Learn More</a>
+  </div>
+</body>
+</html>
