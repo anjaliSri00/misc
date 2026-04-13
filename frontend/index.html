@@ -745,11 +745,11 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div class="logo-section">
+            <!-- <div class="logo-section">
                 <div class="company-info">
                     <img src="image/urbanvillageindia.png" alt="Urban Village Logo" class="logo-img">
                 </div>
-            </div>
+            </div> -->
             <div class="form-title">Vendor Registration Form</div>
         </header>
        
@@ -767,77 +767,42 @@
                 <!-- Basic Information -->
                 <div class="section-header">Basic Details</div>
                 <div class="form-row">
+                      <div class="form-group">
+                                <label for="contactPerson">Name <span
+                                        class="required">(*)</span></label>
+                                <input type="text" id="contactPerson" name="contactPerson" required>
+                                <div class="error-message" id="contactPersonError"></div>
+                            </div>
+                              <div class="form-group">
+                                <label for="mobile">Mobile <span class="required">(*)</span></label>
+                                <input type="tel" id="mobile" name="mobile" required>
+                                <div class="error-message" id="mobileError"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-mail <span class="required">(*)</span></label>
+                                <input type="email" id="email" name="email" required>
+                                <div class="error-message" id="emailError"></div>
+                            </div>
                     <div class="form-group">
                         <label for="firmName">Name of Firm/Company <span class="required">(*)</span></label>
                         <input type="text" id="firmName" name="firmName" required>
                         <div class="error-message" id="firmNameError"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="firmType">Nature of Company Registration <span class="required">(*)</span></label>
-                        <select id="firmType" name="firmType" required>
-                            <option value="">--- Select ---</option>
-                            <option value="public_limited">Public Limited Co</option>
-                            <option value="private_limited">Private Limited Co</option>
-                            <option value="partnership">Partnership Co</option>
-                            <option value="proprietorship">Proprietorship</option>
-                            <option value="limited_liability_partnership">Limited Liability Partnership(LLP)</option>
-
-                            <option value="others">Others</option>
-                        </select>
-                        <div class="error-message" id="firmTypeError"></div>
+                      <div class="form-group">
+                        <label for="aadhar_number">Aadhar No.<span class="required">(*)</span></label>
+                        <input type="text" id="aadhar_number" name="aadhar_number" required>
+                        <div class="error-message" id="aadharNoError">This field is required</div>
                     </div>
-                    <div class="form-group" id="firmTypeSpecifyField" style="display: none;">
-                        <label for="firmTypeSpecify">Please Specify <span class="required">(*)</span></label>
-                        <input type="text" id="firmTypeSpecify" name="firmTypeSpecify">
-                        <div class="error-message" id="firmTypeSpecifyError"></div>
+                    <div class="form-group">
+                        <label for="cancelledCheque">Upload Aadhar Photo <span
+                                class="required">(*)</span></label>
+                        <input type="file" id="aadhar_photo" name="aadhar_photo" accept=".pdf,.jpg,.jpeg,.png"
+                            required>
+                        <div class="error-message" id="aadhar_photo_error"></div>
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="country">Country <span class="required">(*)</span></label>
-                        <select id="country" name="country" required>
-                            <option value="India" selected>India</option>
-                            <option value="USA">USA</option>
-                            <option value="UK">UK</option>
-                            <option value="Germany">Germany</option>
-                            <option value="Japan">Japan</option>
-                            <option value="China">China</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <div class="error-message" id="countryError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gstNo">GST No.<span class="required">(*)</span></label>
-                        <input type="text" id="gstNo" name="gstNo" required>
-                        <div class="error-message" id="gstNoError">This field is required</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="panNo">PAN No.<span class="required">(*)</span></label>
-                        <input type="text" id="panNo" name="panNo" required>
-                        <div class="error-message" id="panNoError">This field is required</div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="companyStatus">Mode of Work Execution <span class="required">(*)</span></label>
-                        <select id="companyStatus" name="companyStatus" required>
-                            <option value="">--- Select ---</option>
-                            <option value="labour_supplier">Labour Supplier</option>
-                            <option value="contractor">Contractor</option>
-                            <option value="contractor_with_material">Contractor with Material</option>
-                            <!-- <option value="contractor_with_material_and_labour">Contractor with Material and Labour</option> -->
-                        </select>
-                        <div class="error-message" id="companyStatusError"></div>
-                    </div>
-                    <div class="form-group">
-                        <!-- Empty space to match image layout -->
-                    </div>
-                    <div class="form-group">
-                        <!-- Empty space to match image layout -->
-                    </div>
-                </div>
+               
 
                 <!-- Details of Vendor Section -->
                 <div class="section-header">Details of Vendor</div>
@@ -891,81 +856,15 @@
                                 </select>
                                 <div class="error-message" id="stateError"></div>
                             </div>
-                            <!-- <div class="form-group">
-                                <label for="vendorCountry">Country</label>
-                                <input type="text" id="vendorCountry" name="vendorCountry" value="India" readonly>
-                            </div> -->
                             <div class="form-group">
-                                <label for="pin">Pin <span class="required">(*)</span></label>
+                                <label for="pin">Pincode <span class="required">(*)</span></label>
                                 <input type="text" id="pin" name="pin" required>
                                 <div class="error-message" id="pinError"></div>
                             </div>
                         </div>
 
-                        <!-- Column 2: STD Code, Fax, Website, Mobile, Email -->
-                        <div class="vendor-column vendor-col-2">
-                            <div class="form-group">
-                                <label for="stdPhone">STD Code with Phone No.</label>
-                                <input type="tel" id="stdPhone" name="stdPhone" placeholder="e.g., 011-12345678">
-                                <div class="error-message" id="stdPhoneError"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="fax">Fax</label>
-                                <input type="tel" id="fax" name="fax">
-                            </div>
-                            <div class="form-group">
-                                <label for="website">Website</label>
-                                <input type="url" id="website" name="website" placeholder="https://example.com">
-                            </div>
-                            <div class="form-group">
-                                <label for="mobile">Mobile <span class="required">(*)</span></label>
-                                <input type="tel" id="mobile" name="mobile" required>
-                                <div class="error-message" id="mobileError"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="email">E-mail <span class="required">(*)</span></label>
-                                <input type="email" id="email" name="email" required>
-                                <div class="error-message" id="emailError"></div>
-                            </div>
-                        </div>
 
-                        <!-- Column 3: Contact Person, Designation, MSME, Business Description -->
-                        <div class="vendor-column vendor-col-3">
-                            <div class="form-group">
-                                <label for="contactPerson">Name of Contact Person <span
-                                        class="required">(*)</span></label>
-                                <input type="text" id="contactPerson" name="contactPerson" required>
-                                <div class="error-message" id="contactPersonError"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="designation">Designation of Contact Person <span
-                                        class="required">(*)</span></label>
-                                <input type="text" id="designation" name="designation" required>
-                                <div class="error-message" id="designationError"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="msme">Is your Firm MSME ? <span class="required">(*)</span></label>
-                                <select id="msme" name="msme" required>
-                                    <option value="">--- Select ---</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select>
-                                <div class="error-message" id="msmeError"></div>
-                            </div>
-                            <div class="form-group" id="msmeCertificateField" style="display: none;">
-                                <label for="msmeCertificate">Upload MSME Certificate <span
-                                        class="required">(*)</span></label>
-                                <input type="file" id="msmeCertificate" name="msmeCertificate"
-                                    accept=".pdf,.jpg,.jpeg,.png">
-                                <div class="error-message" id="msmeCertificateError"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="businessDescription">Brief Description of Business of your Company</label>
-                                <textarea id="businessDescription" name="businessDescription" rows="4"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Column 4: Type of Items Interested -->
+                    
                         <div class="vendor-column vendor-col-4">
                             <div class="form-group">
                                 <label for="itemsInterested">Category of Work <span
@@ -1055,183 +954,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Bank Details Section -->
-                <div class="section-header">Bank Details</div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="bankName">Bank Name <span class="required">(*)</span></label>
-                        <select id="bankName" name="bankName" required>
-                            <option value="">--- Select Bank ---</option>
-                            <option value="loading">Loading banks...</option>
-                        </select>
-                        <div class="error-message" id="bankNameError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="accountNumber">Account Number <span class="required">(*)</span></label>
-                        <input type="text" id="accountNumber" name="accountNumber" required>
-                        <div class="error-message" id="accountNumberError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="ifscCode">IFSC Code <span class="required">(*)</span></label>
-                        <input type="text" id="ifscCode" name="ifscCode" placeholder="e.g., SBIN0001234" required>
-                        <div class="error-message" id="ifscCodeError"></div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="cancelledCheque">Upload Cancelled Cheque Copy <span
-                                class="required">(*)</span></label>
-                        <input type="file" id="cancelledCheque" name="cancelledCheque" accept=".pdf,.jpg,.jpeg,.png"
-                            required>
-                        <div class="error-message" id="cancelledChequeError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="accountHolderName">Account Holder Name <span class="required">(*)</span></label>
-                        <input type="text" id="accountHolderName" name="accountHolderName" required>
-                        <div class="error-message" id="accountHolderNameError"></div>
-                    </div>
-                    <div class="form-group">
-                        <!-- Empty space to maintain grid layout -->
-                    </div>
-                </div>
-
-                <!-- Experience & Reference Section -->
-                <div class="section-header">Experience & Reference</div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="experienceReference">Upload Experience & Reference Document</label>
-                        <input type="file" id="experienceReference" name="experienceReference"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                        <div class="error-message" id="experienceReferenceError"></div>
-                    </div>
-                    <div class="form-group">
-                        <!-- Empty space to maintain grid layout -->
-                    </div>
-                    <div class="form-group">
-                        <!-- Empty space to maintain grid layout -->
-                    </div>
-                </div>
-
-                <!-- Documents & Certificates Section -->
-                <div class="section-header">Documents & Certificates</div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="companyProfile">Company Profile <span class="required">(*)</span></label>
-                        <input type="file" id="companyProfile" name="companyProfile" accept=".pdf,.doc,.docx" required>
-                        <div class="error-message" id="companyProfileError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="completionCertificate">Completion Certificate</label>
-                        <input type="file" id="completionCertificate" name="completionCertificate"
-                            accept=".pdf,.jpg,.jpeg,.png">
-                        <div class="error-message" id="completionCertificateError"></div>
-                    </div>
-                    <div class="form-group">
-                        <!-- Empty space to maintain grid layout -->
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Work Order/ Purchase Order</label>
-                        <div class="multiple-upload-container" id="workOrderContainer">
-                            <div class="upload-item">
-                                <input type="file" id="workOrder_1" name="workOrder[]" accept=".pdf,.jpg,.jpeg,.png">
-                                <button type="button" class="add-upload-btn"
-                                    onclick="addUploadField('workOrder', 'workOrderContainer', 5)">+</button>
-                            </div>
-                        </div>
-                        <div class="error-message" id="workOrderError"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Past/Current Project Images (Max 10)</label>
-                        <div class="multiple-upload-container" id="projectImagesContainer">
-                            <div class="upload-item">
-                                <input type="file" id="projectImage_1" name="projectImages[]" accept=".jpg,.jpeg,.png">
-                                <button type="button" class="add-upload-btn"
-                                    onclick="addUploadField('projectImage', 'projectImagesContainer', 10)">+</button>
-                            </div>
-                        </div>
-                        <div class="error-message" id="projectImagesError"></div>
-                    </div>
-                    <div class="form-group">
-                        <!-- Empty space to maintain grid layout -->
-                    </div>
-                </div>
-
-                <!-- Company Financial Details Section -->
-                <div class="section-header">Company Financial Details (3 Years)</div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="financialYear1">Financial Year 1 <span class="required">(*)</span></label>
-                        <select id="financialYear1" name="financialYear1" required>
-                            <option value="">--- Select Year ---</option>
-                            <option value="2023-24">2023-24</option>
-                            <option value="2022-23">2022-23</option>
-                            <option value="2021-22">2021-22</option>
-                            <option value="2020-21">2020-21</option>
-                            <option value="2019-20">2019-20</option>
-                        </select>
-                        <div class="error-message" id="financialYear1Error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="financialYear2">Financial Year 2 <span class="required">(*)</span></label>
-                        <select id="financialYear2" name="financialYear2" required>
-                            <option value="">--- Select Year ---</option>
-                            <option value="2023-24">2023-24</option>
-                            <option value="2022-23">2022-23</option>
-                            <option value="2021-22">2021-22</option>
-                            <option value="2020-21">2020-21</option>
-                            <option value="2019-20">2019-20</option>
-                        </select>
-                        <div class="error-message" id="financialYear2Error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="financialYear3">Financial Year 3 <span class="required">(*)</span></label>
-                        <select id="financialYear3" name="financialYear3" required>
-                            <option value="">--- Select Year ---</option>
-                            <option value="2023-24">2023-24</option>
-                            <option value="2022-23">2022-23</option>
-                            <option value="2021-22">2021-22</option>
-                            <option value="2020-21">2020-21</option>
-                            <option value="2019-20">2019-20</option>
-                        </select>
-                        <div class="error-message" id="financialYear3Error"></div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="financialDocument1">Financial Documents Year 1 <span
-                                class="required">(*)</span></label>
-                        <input type="file" id="financialDocument1" name="financialDocument1"
-                            accept=".pdf,.jpg,.jpeg,.png" required>
-                        <div class="error-message" id="financialDocument1Error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="financialDocument2">Financial Documents Year 2 <span
-                                class="required">(*)</span></label>
-                        <input type="file" id="financialDocument2" name="financialDocument2"
-                            accept=".pdf,.jpg,.jpeg,.png" required>
-                        <div class="error-message" id="financialDocument2Error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="financialDocument3">Financial Documents Year 3 <span
-                                class="required">(*)</span></label>
-                        <input type="file" id="financialDocument3" name="financialDocument3"
-                            accept=".pdf,.jpg,.jpeg,.png" required>
-                        <div class="error-message" id="financialDocument3Error"></div>
-                    </div>
-                </div>
-
-
+                </div>               
 
                 <!-- Buttons -->
                 <div class="button-container">
