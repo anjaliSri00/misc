@@ -3,361 +3,644 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Location</title>
+  <title>Interior Service | Location</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; background-image: url('assets/int7.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .modal { background: #fff; width: 600px; max-width: 95vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 20px; position: relative; max-height: 90vh; overflow-y: auto; }
-    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
-    .progress { width: 98%; height: 100%; background: #3b82f6; }
-    h2 { margin: 0 0 8px; font-size: 24px; line-height: 1.25; text-align: center; color: #0f172a; }
-    .subtitle { text-align: center; color: #6b7280; margin-bottom: 22px; font-size: 16px; }
-    .form-row { display: flex; gap: 15px; margin-bottom: 20px; }
-    .form-group { flex: 1; }
-    .form-group.full-width { flex: none; width: 100%; }
-    .form-label { display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f5f0ea;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Warm gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #faf7f2 0%, #f0e8e0 100%);
+      z-index: 0;
+    }
+
+    /* Subtle pattern */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#c4a47c 0.5px, transparent 0.5px);
+      background-size: 24px 24px;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 650px;
+      padding: 24px;
+    }
+
+    /* Main card */
+    .location-selector {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(140, 108, 85, 0.1);
+      overflow: hidden;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #f0e8e0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .progress {
+      width: 98%;
+      height: 100%;
+      background: #8c6c55;
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c241a;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9b8978;
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    /* Form styles */
+    .form-container {
+      padding: 0 32px 20px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      flex: 1;
+    }
+
+    .form-group.full-width {
+      width: 100%;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #5c4a3a;
+      margin-bottom: 8px;
+    }
+
     .input-wrapper {
       position: relative;
-      border: 2px solid #e5e7eb;
-      border-radius: 12px;
-      background: #fff;
+      border: 1.5px solid #ede3d8;
+      border-radius: 16px;
+      background: #ffffff;
       transition: all 0.3s ease;
       overflow: hidden;
     }
+
     .input-wrapper:hover {
-      border-color: #d1d5db;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-color: #c4a47c;
     }
+
     .input-wrapper:focus-within {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: #8c6c55;
+      box-shadow: 0 0 0 3px rgba(140, 108, 85, 0.1);
     }
+
     .input-icon {
       position: absolute;
-      left: 12px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       font-size: 18px;
-      color: #64748b;
+      color: #b8a694;
       z-index: 2;
       pointer-events: none;
     }
+
     .form-input, .form-select {
       width: 100%;
-      padding: 12px 12px 12px 40px;
+      padding: 14px 14px 14px 44px;
       border: none;
       background: transparent;
       font-size: 14px;
-      color: #374151;
+      color: #2c241a;
       outline: none;
       cursor: pointer;
       appearance: none;
       -webkit-appearance: none;
-      -moz-appearance: none;
+      font-family: inherit;
     }
+
     .form-input {
       cursor: text;
     }
+
+    .form-input::placeholder {
+      color: #c4b8a8;
+    }
+
     .form-select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-      background-position: right 8px center;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23b8a694' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 12px center;
       background-repeat: no-repeat;
       background-size: 14px;
     }
+
     .form-select option {
       padding: 8px;
       font-size: 14px;
+      color: #2c241a;
     }
-    .form-select option:first-child {
-      color: #9ca3af;
-      font-style: italic;
-    }
-    .city-selector {
-      position: relative;
-      border: 2px solid #e5e7eb;
-      border-radius: 12px;
-      background: #fff;
-      transition: all 0.3s ease;
-      overflow: hidden;
-    }
-    .city-selector:hover {
-      border-color: #d1d5db;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-    .city-selector:focus-within {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-    .city-selector .icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-      color: #64748b;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .city-selector select {
-      width: 100%;
-      padding: 12px 12px 12px 40px;
-      border: none;
-      background: transparent;
-      font-size: 14px;
-      color: #374151;
-      outline: none;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-      background-position: right 8px center;
-      background-repeat: no-repeat;
-      background-size: 14px;
-    }
-    .city-selector select:focus {
-      outline: none;
-    }
-    .city-selector select option {
-      padding: 8px;
-      font-size: 14px;
-    }
-    .city-selector select option:first-child {
-      color: #9ca3af;
-      font-style: italic;
-    }
-    .navigation { display: flex; justify-content: space-between; margin-top: 24px; gap: 10px; }
-    .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; font-size: 14px; }
-    .btn-secondary { background: #f8f9fa; color: #374151; border: 1px solid #d1d5db; }
-    .btn-secondary:hover { background: #e9ecef; }
-    .btn-primary { background: #3b82f6; color: #fff; }
-    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
-    .close { position: absolute; top: 10px; right: 10px; font-size: 18px; color: #6b7280; cursor: pointer; }
-    .or-divider { text-align: center; margin: 15px 0; color: #6b7280; font-size: 12px; position: relative; }
-    .or-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e5e7eb; }
-    .or-divider span { background: #fff; padding: 0 10px; position: relative; z-index: 1; }
 
-    @media (max-width: 640px) {
-      .modal { padding: 15px; }
-      h2 { font-size: 20px; }
-      .form-row { flex-direction: column; gap: 10px; }
-      .navigation { flex-direction: column; }
-      .btn { width: 100%; margin-bottom: 8px; }
+    .form-select option:first-child {
+      color: #b8a694;
+    }
+
+    /* Button container */
+    .btn-container {
+      display: flex;
+      gap: 16px;
+      padding: 20px 32px 36px;
+      width: 100%;
+    }
+
+    /* Button styles */
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .btn-back {
+      background: #f5ede6;
+      color: #8c6c55;
+      border: 1px solid #ede3d8;
+    }
+
+    .btn-back:hover {
+      background: #efe5db;
+      transform: translateY(-1px);
+    }
+
+    .btn-continue {
+      background: #8c6c55;
+      color: #fff;
+    }
+
+    .btn-continue:hover:not(:disabled) {
+      background: #7a5b46;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(140, 108, 85, 0.25);
+    }
+
+    .btn-continue:disabled {
+      background: #d4c5b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Close button */
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 26px;
+      cursor: pointer;
+      color: #b8a694;
+      transition: all 0.2s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f8f3ee;
+      z-index: 20;
+    }
+    .close:hover {
+      color: #8c6c55;
+      background: #efe5db;
+      transform: rotate(90deg);
+    }
+
+    /* Loading state */
+    .loading {
+      color: #b8a694;
+      font-style: italic;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 0 20px 16px;
+      }
+      .btn-container {
+        padding: 16px 20px 28px;
+        gap: 12px;
+      }
+      h2 {
+        font-size: 20px;
+      }
+      .btn {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="modal">
-      <span class="close">&times;</span>
-      <div class="progress-bar"><div class="progress"></div></div>
-      <h2>In which city, do you need the services?</h2>
+  <div class="container">
+    <div class="location-selector">
 
-   <div class="form-row">
-  <div class="form-group">
-    <label class="form-label">Pincode</label>
-    <div class="input-wrapper">
-      <span class="input-icon">📮</span>
-      <input id="pincodeInput" type="text" placeholder="Enter 6-digit pincode" maxlength="6" class="form-input" />
-    </div>
-  </div>
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="progress" id="progressBar"></div>
+      </div>
 
-  <div class="form-group">
-    <label class="form-label">State</label>
-    <div class="input-wrapper">
-      <span class="input-icon">🏛️</span>
-      <select id="stateInput" class="form-select">
-        <option value="">Select state</option>
-      </select>
-    </div>
-  </div>
-</div>
+      <!-- Header -->
+      <div class="form-container">
+        <h2>Where do you need the services?</h2>
+        <div class="subtitle">Help us connect you with professionals in your area</div>
+      </div>
 
-<div class="form-group full-width">
-  <label class="form-label">City</label>
-  <div class="input-wrapper">
-    <span class="input-icon">🏙️</span>
-    <select id="cityInput" class="form-select">
-      <option value="">Select city</option>
-    </select>
-  </div>
-</div>
+      <!-- Form Fields -->
+      <div class="form-container">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">PIN Code</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📮</span>
+              <input id="pincodeInput" type="text" placeholder="Enter 6-digit pincode" maxlength="6" class="form-input" />
+            </div>
+          </div>
 
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🏛️</span>
+              <select id="stateInput" class="form-select">
+                <option value="">Select state</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
+        <div class="form-group full-width">
+          <label class="form-label">City / District</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🏙️</span>
+            <select id="cityInput" class="form-select">
+              <option value="">Select city</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-      <div class="navigation">
-        <button class="btn btn-secondary" onclick="goBack()">Back</button>
-        <button id="continueBtn" class="btn btn-primary" disabled onclick="continueToNext()">Continue</button>
+      <!-- Buttons -->
+      <div class="btn-container">
+        <button class="btn btn-back" id="backBtn">← Back</button>
+        <button class="btn btn-continue" id="continueBtn" disabled>Continue →</button>
       </div>
     </div>
   </div>
 
- <script>
-const pincodeInput = document.getElementById("pincodeInput");
-const citySelect = document.getElementById("cityInput");
-const stateSelect = document.getElementById("stateInput");
-const continueBtn = document.getElementById("continueBtn");
+  <script>
+    const pincodeInput = document.getElementById("pincodeInput");
+    const citySelect = document.getElementById("cityInput");
+    const stateSelect = document.getElementById("stateInput");
+    const continueBtn = document.getElementById("continueBtn");
+    const backBtn = document.getElementById("backBtn");
+    const closeBtn = document.getElementById("closeBtn");
 
-let formData = {
-  pincode: "",
-  state: "",
-  city: ""
-};
+    let formData = {
+      pincode: "",
+      state: "",
+      city: ""
+    };
 
-/* ---------------- Utils ---------------- */
+    let previousFormData = {};
 
-function updateContinueButton() {
-  continueBtn.disabled = !formData.city;
-}
+    /* ---------------- Utils ---------------- */
 
-function isValidPincode(pin) {
-  return /^[1-9][0-9]{5}$/.test(pin);
-}
+    function updateContinueButton() {
+      continueBtn.disabled = !formData.city;
+    }
 
-/* ---------------- Load States API ---------------- */
+    function isValidPincode(pin) {
+      return /^[1-9][0-9]{5}$/.test(pin);
+    }
 
-async function loadStates() {
-  stateSelect.innerHTML = `<option>Loading states...</option>`;
+    function saveToLocalStorage() {
+      // Load existing data
+      const existingData = localStorage.getItem('completeFormData') || localStorage.getItem('finalFormData');
+      let completeData = {};
+      if (existingData) {
+        try {
+          completeData = JSON.parse(existingData);
+        } catch(e) {}
+      }
+      
+      const finalData = {
+        ...completeData,
+        location: {
+          pincode: formData.pincode,
+          state: formData.state,
+          city: formData.city
+        },
+        timestamp: new Date().toISOString()
+      };
+      
+      localStorage.setItem('locationData', JSON.stringify(formData));
+      localStorage.setItem('completeFormData', JSON.stringify(finalData));
+    }
 
-  try {
-    const res = await fetch("https://countriesnow.space/api/v0.1/countries/states");
-    const data = await res.json();
+    function loadPreviousLocationData() {
+      const saved = localStorage.getItem('locationData');
+      if (saved) {
+        try {
+          const savedData = JSON.parse(saved);
+          if (savedData.pincode) {
+            formData.pincode = savedData.pincode;
+            pincodeInput.value = savedData.pincode;
+          }
+          if (savedData.state) {
+            formData.state = savedData.state;
+          }
+          if (savedData.city) {
+            formData.city = savedData.city;
+          }
+          updateContinueButton();
+        } catch(e) {}
+      }
+    }
 
-    const india = data.data.find(c => c.name === "India");
+    /* ---------------- Load States API ---------------- */
 
-    stateSelect.innerHTML = `<option value="">Select state</option>`;
+    async function loadStates() {
+      stateSelect.innerHTML = `<option>Loading states...</option>`;
 
-    india.states.forEach(state => {
-      const opt = document.createElement("option");
-      opt.value = state.name;
-      opt.textContent = state.name;
-      stateSelect.appendChild(opt);
+      try {
+        const res = await fetch("https://countriesnow.space/api/v0.1/countries/states");
+        const data = await res.json();
+
+        const india = data.data.find(c => c.name === "India");
+
+        stateSelect.innerHTML = `<option value="">Select state</option>`;
+
+        india.states.forEach(state => {
+          const opt = document.createElement("option");
+          opt.value = state.name;
+          opt.textContent = state.name;
+          stateSelect.appendChild(opt);
+        });
+
+        // Restore previously selected state if exists
+        if (formData.state) {
+          stateSelect.value = formData.state;
+          if (formData.state) {
+            fetchCitiesByState(formData.state);
+          }
+        }
+
+      } catch (err) {
+        console.error("State API error:", err);
+        stateSelect.innerHTML = `<option>Error loading states</option>`;
+      }
+    }
+
+    /* ---------------- Cities from State API ---------------- */
+
+    async function fetchCitiesByState(state) {
+      citySelect.innerHTML = `<option>Loading cities...</option>`;
+
+      try {
+        const res = await fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ country: "India", state })
+        });
+
+        const data = await res.json();
+
+        citySelect.innerHTML = `<option value="">Select city</option>`;
+
+        data.data.forEach(city => {
+          const opt = document.createElement("option");
+          opt.value = city;
+          opt.textContent = city;
+          citySelect.appendChild(opt);
+        });
+
+        // Restore previously selected city if exists
+        if (formData.city) {
+          citySelect.value = formData.city;
+        }
+
+      } catch (err) {
+        console.error("City API error:", err);
+        citySelect.innerHTML = `<option>Error loading cities</option>`;
+      }
+    }
+
+    /* ---------------- Pincode API ---------------- */
+
+    async function fetchFromPincode(pincode) {
+      if (!isValidPincode(pincode)) return;
+
+      citySelect.innerHTML = `<option>Loading...</option>`;
+      stateSelect.value = "";
+
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+        const data = await res.json();
+
+        if (data[0].Status !== "Success") throw "Invalid";
+
+        const postOffices = data[0].PostOffice;
+        const state = postOffices[0].State;
+        const cities = [...new Set(postOffices.map(p => p.District))];
+
+        stateSelect.value = state;
+        formData.state = state;
+        formData.pincode = pincode;
+
+        citySelect.innerHTML = `<option value="">Select city</option>`;
+        cities.forEach(city => {
+          citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+        });
+
+        citySelect.value = cities[0];
+        formData.city = cities[0];
+
+        updateContinueButton();
+        saveToLocalStorage();
+
+      } catch (err) {
+        console.error("Pincode error:", err);
+        citySelect.innerHTML = `<option value="">Invalid pincode</option>`;
+        stateSelect.value = "";
+        formData.city = "";
+        updateContinueButton();
+      }
+    }
+
+    /* ---------------- Event Listeners ---------------- */
+
+    pincodeInput.addEventListener("input", (e) => {
+      const pin = e.target.value.trim();
+      if (pin.length === 6) {
+        fetchFromPincode(pin);
+      } else {
+        formData.pincode = "";
+        formData.state = "";
+        formData.city = "";
+        updateContinueButton();
+      }
     });
 
-  } catch (err) {
-    console.error("State API error:", err);
-    stateSelect.innerHTML = `<option>Error loading states</option>`;
-  }
-}
+    stateSelect.addEventListener("change", () => {
+      const state = stateSelect.value;
+      if (!state) return;
 
-/* ---------------- Cities from State API ---------------- */
+      formData.state = state;
+      formData.city = "";
+      formData.pincode = "";
+      pincodeInput.value = "";
 
-async function fetchCitiesByState(state) {
-  citySelect.innerHTML = `<option>Loading cities...</option>`;
-
-  try {
-    const res = await fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ country: "India", state })
+      fetchCitiesByState(state);
+      updateContinueButton();
+      saveToLocalStorage();
     });
 
-    const data = await res.json();
+    citySelect.addEventListener("change", () => {
+      const city = citySelect.value;
+      if (!city) return;
 
-    citySelect.innerHTML = `<option value="">Select city</option>`;
-
-    data.data.forEach(city => {
-      const opt = document.createElement("option");
-      opt.value = city;
-      opt.textContent = city;
-      citySelect.appendChild(opt);
+      formData.city = city;
+      updateContinueButton();
+      saveToLocalStorage();
     });
 
-  } catch (err) {
-    console.error("City API error:", err);
-    citySelect.innerHTML = `<option>Error loading cities</option>`;
-  }
-}
+    /* ---------------- Navigation ---------------- */
 
-/* ---------------- Pincode API ---------------- */
+    function continueToNext() {
+      if (!formData.city) return;
+      
+      saveToLocalStorage();
+      
+      // Combine with all previous data
+      const allData = JSON.parse(localStorage.getItem('completeFormData') || '{}');
+      const finalData = {
+        ...allData,
+        location: {
+          pincode: formData.pincode,
+          state: formData.state,
+          city: formData.city
+        },
+        completedAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('completeFormData', JSON.stringify(finalData));
+      localStorage.setItem('finalFormData', JSON.stringify(finalData));
+      
+      window.location.href = "email.html";
+    }
 
-async function fetchFromPincode(pincode) {
-  if (!isValidPincode(pincode)) return;
+    function goBack() {
+      saveToLocalStorage();
+      window.location.href = "hiring-likelihood.html";
+    }
 
-  citySelect.innerHTML = `<option>Loading...</option>`;
-  stateSelect.value = "";
+    function closeModal() {
+      console.log('Close clicked - staying on page');
+    }
 
-  try {
-    const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-    const data = await res.json();
+    /* ---------------- Load Previous Data ---------------- */
 
-    if (data[0].Status !== "Success") throw "Invalid";
+    function loadPreviousFormData() {
+      const savedLocation = localStorage.getItem('locationData');
+      if (savedLocation) {
+        try {
+          const saved = JSON.parse(savedLocation);
+          if (saved.pincode) {
+            formData.pincode = saved.pincode;
+            pincodeInput.value = saved.pincode;
+            if (saved.pincode.length === 6) {
+              fetchFromPincode(saved.pincode);
+            }
+          }
+          if (saved.state && !formData.state) {
+            formData.state = saved.state;
+          }
+          if (saved.city && !formData.city) {
+            formData.city = saved.city;
+          }
+          updateContinueButton();
+        } catch(e) {}
+      }
+    }
 
-    const postOffices = data[0].PostOffice;
+    /* ---------------- Init ---------------- */
 
-    const state = postOffices[0].State;
-    const cities = [...new Set(postOffices.map(p => p.District))];
-
-    stateSelect.value = state;
-    formData.state = state;
-    formData.pincode = pincode;
-
-    citySelect.innerHTML = `<option value="">Select city</option>`;
-    cities.forEach(city => {
-      citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+    document.addEventListener("DOMContentLoaded", () => {
+      loadStates();
+      loadPreviousFormData();
+      updateContinueButton();
+      
+      // Event listeners
+      if (continueBtn) continueBtn.addEventListener('click', continueToNext);
+      if (backBtn) backBtn.addEventListener('click', goBack);
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      
+      // Close on outside click
+      document.querySelector('.container')?.addEventListener('click', function(e) {
+        if (e.target === document.querySelector('.container')) {
+          closeModal();
+        }
+      });
     });
-
-    citySelect.value = cities[0];
-    formData.city = cities[0];
-
-    updateContinueButton();
-
-  } catch (err) {
-    console.error("Pincode error:", err);
-    citySelect.innerHTML = `<option value="">Invalid pincode</option>`;
-    stateSelect.value = "";
-    formData.city = "";
-    updateContinueButton();
-  }
-}
-
-/* ---------------- Event Listeners ---------------- */
-
-pincodeInput.addEventListener("input", (e) => {
-  const pin = e.target.value.trim();
-  if (pin.length === 6) fetchFromPincode(pin);
-});
-
-stateSelect.addEventListener("change", () => {
-  const state = stateSelect.value;
-  if (!state) return;
-
-  formData.state = state;
-  formData.city = "";
-  formData.pincode = "";
-
-  fetchCitiesByState(state);
-  updateContinueButton();
-});
-
-citySelect.addEventListener("change", () => {
-  const city = citySelect.value;
-  if (!city) return;
-
-  formData.city = city;
-  updateContinueButton();
-});
-
-/* ---------------- Navigation ---------------- */
-
-function continueToNext() {
-  localStorage.setItem("locationData", JSON.stringify(formData));
-  window.location.href = "email.html";
-}
-
-function goBack() {
-  window.location.href = "hiring-likelihood.html";
-}
-
-function closeModal() {}
-
-/* ---------------- Init ---------------- */
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadStates();
-  updateContinueButton();
-});
-</script>
-
+  </script>
 </body>
 </html>

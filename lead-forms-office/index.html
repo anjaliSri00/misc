@@ -3,252 +3,319 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interior Service Modal</title>
+  <title>Interior Service | Space Type</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      background-image: url('assets/int3.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f5f0ea;
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      position: relative;
     }
 
-    /* Overlay */
-    .overlay {
+    /* Warm gradient background */
+    body::before {
+      content: '';
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: linear-gradient(135deg, #faf7f2 0%, #f0e8e0 100%);
+      z-index: 0;
     }
 
-    /* Modal */
-    .modal {
-      background: #fff;
-      width: 450px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      padding: 24px;
+    /* Subtle pattern */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#c4a47c 0.5px, transparent 0.5px);
+      background-size: 24px 24px;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Main container */
+    .container {
       position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 600px;
+      padding: 24px;
+    }
+
+    /* Main card */
+    .space-selector {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(140, 108, 85, 0.1);
+      overflow: hidden;
+    }
+
+    /* Header - with EXACT content */
+    .header {
+      padding: 10px 10px 10px;
+      /* border-bottom: 1px solid #efe5db; */
     }
 
     /* Progress bar */
     .progress-bar {
       width: 100%;
       height: 6px;
-      background: #e5e7eb;
+      background: #f0e8e0;
       border-radius: 6px;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
     }
     .progress {
-      width: 20%; /* First step */
+      width: 25%;
       height: 100%;
-      background: #3b82f6;
+      background: #8c6c55;
+      border-radius: 6px;
       transition: width 0.3s ease;
     }
 
     h2 {
-      font-size: 20px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c241a;
+      margin-bottom: 24px;
       text-align: center;
-      color: #1f2937;
+    }
+
+    /* Options - matching original structure but styled */
+    .options-grid {
+      padding: 0 52px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .option {
       display: flex;
       align-items: center;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
+      border: 1.5px solid #ede3d8;
+      border-radius: 16px;
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #ffffff;
+    }
+    .option:hover {
+      border-color: #c4a47c;
+      background: #fefcf9;
+    }
+    .option.selected {
+      border-color: #8c6c55;
+      background: #fffaf5;
+      box-shadow: 0 4px 12px rgba(140, 108, 85, 0.1);
+    }
+    .option input {
+      margin-right: 14px;
+      width: 18px;
+      height: 18px;
+      accent-color: #8c6c55;
+      cursor: pointer;
+    }
+    .option-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: #2c241a;
+    }
+    .option.selected .option-text {
+      color: #8c6c55;
+    }
+
+    /* Button */
+    .btn {
+      display: block;
+      width: calc(100% - 104px);
+      margin: 20px 52px 40px;
+      padding: 14px;
+      background: #8c6c55;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .option:hover {
-      border-color: #3b82f6;
-      background: #f8fafc;
-    }
-    .option.selected {
-      border-color: #3b82f6;
-      background: #eff6ff;
-    }
-    .option input {
-      margin-right: 12px;
-    }
-
-    .option input[type="text"] {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 14px;
-      background: transparent;
-    }
-
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background: #3b82f6;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 16px;
-    }
-    .btn:hover {
-      background: #2563eb;
+    .btn:hover:not(:disabled) {
+      background: #7a5b46;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(140, 108, 85, 0.25);
     }
     .btn:disabled {
-      background: #9ca3af;
+      background: #d4c5b8;
       cursor: not-allowed;
     }
 
     /* Close button */
     .close {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      font-size: 20px;
+      top: 20px;
+      right: 24px;
+      font-size: 26px;
       cursor: pointer;
-      color: #6b7280;
+      color: #b8a694;
+      transition: all 0.2s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f8f3ee;
     }
     .close:hover {
-      color: #111827;
+      color: #8c6c55;
+      background: #efe5db;
+      transform: rotate(90deg);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header {
+        padding: 32px 24px 20px;
+      }
+      .options-grid {
+        padding: 0 24px 20px;
+      }
+      .btn {
+        width: calc(100% - 48px);
+        margin: 20px 24px 32px;
+      }
+      h2 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="modal">
-      <span class="close">&times;</span>
+  <div class="container">
+    <div class="space-selector">
+      <!-- <span class="close" id="closeBtn">&times;</span> -->
 
+      <!-- Progress bar -->
       <div class="progress-bar">
         <div class="progress" id="progressBar"></div>
       </div>
 
-      <h2>What type of interior service do you need?</h2>
+      <!-- EXACT content from your original -->
+      <div class="header">
+        <h2>What type of Property?</h2>
+      </div>
 
-      <label class="option" data-value="complete project">
-        <input type="radio" name="type_of_service" value="complete project">
-        Complete project - designing and installation
-      </label>
-       <label class="option" data-value="design only">
-        <input type="radio" name="type_of_service" value="design only">
-        Design only
-      </label>
-       <label class="option" data-value="installation only">
-        <input type="radio" name="type_of_service" value="installation only">
-        Installation only
-      </label>
-      <label class="option" data-value="other">
-        <input type="radio" name="type_of_service" value="other">
-        Other 
-      </label>
+      <!-- Options - exactly matching original values -->
+      <div class="options-grid" id="optionsGrid">
+        <label class="option" data-value="Residential">
+          <input type="radio" name="property_type" value="Residential">
+          <span class="option-text">Residential</span>
+        </label>
+        <label class="option" data-value="Commercial">
+          <input type="radio" name="property_type" value="Commercial">
+          <span class="option-text">Commercial</span>
+        </label>
+      </div>
 
-      <button class="btn" id="continueBtn" disabled onclick="continueToNext()">Continue</button>
+      <button class="btn" id="continueBtn" disabled>Continue</button>
     </div>
   </div>
 
   <script>
     let formData = {};
 
+    // DOM elements
+    const options = document.querySelectorAll('.option');
+    const continueBtn = document.getElementById('continueBtn');
+    const closeBtn = document.getElementById('closeBtn');
+
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-      // Ensure continue button is disabled by default
-      document.getElementById('continueBtn').disabled = true;
-      
+      continueBtn.disabled = true;
       setupEventListeners();
 
-      // Preselect previously chosen service type if available
-      const stored = localStorage.getItem('serviceFormData');
+      // Preselect previously chosen space type if available
+      const stored = localStorage.getItem('propertyFormData');
       if (stored) {
         const saved = JSON.parse(stored);
-        if (saved.serviceType) {
-          const radio = document.querySelector(`label.option input[type="radio"][value="${saved.serviceType}"]`);
-          if (radio) {
-            const optionEl = radio.closest('.option');
-            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-            optionEl.classList.add('selected');
+        if (saved.property_type) {
+          const option = Array.from(options).find(opt => 
+            opt.querySelector('input').value === saved.property_type
+          );
+          if (option) {
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            const radio = option.querySelector('input');
             radio.checked = true;
-            formData.serviceType = saved.serviceType;
-            // Enable continue button only if option is selected
-            document.getElementById('continueBtn').disabled = false;
+            formData.property_type = saved.property_type;
+            continueBtn.disabled = false;
           }
         }
       }
     });
 
     function setupEventListeners() {
-      // Service type selection
-      document.querySelectorAll('.option').forEach(option => {
-        option.addEventListener('click', function() {
-          // Remove previous selection
-          document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-          // Add selection to clicked option
-          this.classList.add('selected'); 
+      // Space type selection
+      options.forEach(option => {
+        option.addEventListener('click', function(e) {
+          // Don't trigger if clicking on radio directly (but it's fine)
+          options.forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
           
-          // Enable continue button
-          document.getElementById('continueBtn').disabled = false;
-          
-          // Store selection
           const radio = this.querySelector('input[type="radio"]');
-          formData.serviceType = radio.value;
+          radio.checked = true;
+          formData.property_type = radio.value;
           
+          continueBtn.disabled = false;
           
-          console.log("Service type selected",formData.serviceType);
-
-          // Store data in localStorage first
-          localStorage.setItem('serviceFormData', JSON.stringify(formData));
+          // Store data in localStorage
+          localStorage.setItem('propertyFormData', JSON.stringify(formData));
         });
       });
 
       // Close button
-      document.querySelector('.close').addEventListener('click', closeModal);
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+      }
     }
 
     function continueToNext() {
-      // Store the selected service type
-      // console.log('Service type selected:', formData);
+      if (!formData.property_type) return;
       
-      // Store data in localStorage for the next page
-      localStorage.setItem('serviceFormData', JSON.stringify(formData));
+      // Store data for next page
+      localStorage.setItem('propertyFormData', JSON.stringify(formData));
       
-      // Redirect based on service type
-      // if (formData.serviceType === 'office') {
-      //   window.location.href = 'project-type.html';
-      // } else
-       if (formData.serviceType === 'other') {
-        window.location.href = 'other-services.html';
-      }else{
-        window.location.href = 'project-type.html';
-      }
+      // Redirect to next step
+    //  if(formData.property_type ==="Residential"){ 
+      window.location.href = 'space-type.html';
+    //  }
     }
 
     function closeModal() {
-      // Do nothing - stay on the same page
-      // This prevents the white screen issue when clicking outside
+      // Do nothing - stay on the same page (prevents white screen)
+      console.log('Close clicked - staying on page');
     }
 
     // Close modal when clicking outside
-    document.querySelector('.overlay').addEventListener('click', function(e) {
-      if (e.target === this) {
+    document.querySelector('.container')?.addEventListener('click', function(e) {
+      if (e.target === document.querySelector('.container')) {
         closeModal();
       }
     });
+
+    // Attach continue button handler
+    continueBtn.addEventListener('click', continueToNext);
   </script>
 </body>
 </html>

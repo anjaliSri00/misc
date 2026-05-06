@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interior Service | Budget Selection</title>
+  <title>Interior Service | Service Type</title>
   <style>
     * {
       margin: 0;
@@ -54,7 +54,7 @@
     }
 
     /* Main card */
-    .budget-selector {
+    .service-selector {
       background: #ffffff;
       border-radius: 20px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(140, 108, 85, 0.1);
@@ -71,7 +71,7 @@
       margin-bottom: 28px;
     }
     .progress {
-      width: 90%;
+      width: 50%;
       height: 100%;
       background: #8c6c55;
       border-radius: 6px;
@@ -121,7 +121,7 @@
       cursor: pointer;
     }
     .option-text {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 500;
       color: #2c241a;
     }
@@ -129,20 +129,7 @@
       color: #8c6c55;
     }
 
-    /* Special styling for discuss option */
-    .option-discuss {
-      border-color: #e8ddd0;
-      background: #fefbf8;
-    }
-    .option-discuss:hover {
-      border-color: #c4a47c;
-    }
-    .option-discuss .option-text {
-      color: #8c6c55;
-      font-weight: 600;
-    }
-
-    /* Button container */
+    /* Button container - flex row for side by side buttons */
     .btn-container {
       display: flex;
       gap: 16px;
@@ -231,15 +218,12 @@
         padding: 12px 16px;
         font-size: 14px;
       }
-      .option-text {
-        font-size: 13px;
-      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="budget-selector">
+    <div class="service-selector">
       <!-- <span class="close" id="closeBtn">&times;</span> -->
 
       <!-- Progress bar -->
@@ -249,38 +233,26 @@
 
       <!-- Header -->
       <div class="options-grid">
-        <h2>What's your budget for the project?</h2>
+        <h2>What type of Services?</h2>
       </div>
 
-      <!-- Budget Options -->
+      <!-- Options - exactly matching original values -->
       <div class="options-grid" id="optionsGrid">
-        <label class="option" data-value="Upto Rs.10 Lakhs">
-          <input type="radio" name="budget" value="Upto ₹10 Lakhs">
-          <span class="option-text">Upto ₹10 Lakhs</span>
+        <label class="option" data-value="Design only">
+          <input type="radio" name="type_of_service" value="Design only">
+          <span class="option-text">Design only</span>
         </label>
-
-        <label class="option" data-value="Rs.10 Lakhs - 20 Lakhs per sq.ft.">
-          <input type="radio" name="budget" value="₹10 Lakhs - ₹20 Lakhs">
-          <span class="option-text">₹10 Lakhs to ₹20 Lakhs</span>
+        <label class="option" data-value="Turnkey">
+          <input type="radio" name="type_of_service" value="Turnkey">
+          <span class="option-text">Turnkey</span>
         </label>
-
-        <label class="option" data-value="Rs.20 Lakhs - 40 Lakhs per sq.ft.">
-          <input type="radio" name="budget" value="₹20 Lakhs - ₹40 Lakhs">
-          <span class="option-text">₹20 Lakhs to ₹40 Lakhs</span>
-        </label>
-
-        <label class="option" data-value="More than Rs.40 Lakhs per sq.ft.">
-          <input type="radio" name="budget" value="₹40 Lakhs or more">
-          <span class="option-text">₹40 Lakhs or more</span>
-        </label>
-
-        <label class="option option-discuss" data-value="discuss-with-professional">
-          <input type="radio" name="budget" value="I would like to discuss with the professional">
-          <span class="option-text">I would like to discuss with the professional</span>
-        </label>
+        <!-- <label class="option" data-value="Build only">
+          <input type="radio" name="type_of_service" value="Build only">
+          <span class="option-text">Build only</span>
+        </label> -->
       </div>
 
-      <!-- Buttons in one line -->
+      <!-- Buttons in one line (side by side) -->
       <div class="btn-container">
         <button class="btn btn-back" id="backBtn">← Back</button>
         <button class="btn btn-continue" id="continueBtn" disabled>Continue →</button>
@@ -290,7 +262,7 @@
 
   <script>
     let formData = {};
-    let previousFormData = {};
+    let spacesFormData = {};
 
     // DOM elements
     const options = document.querySelectorAll('.option');
@@ -301,89 +273,52 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
       continueBtn.disabled = true;
-      loadPreviousFormData();
       setupEventListeners();
-    });
 
-    function loadPreviousFormData() {
-      // Get data from all previous forms
-      const completeData = localStorage.getItem('completeFormData');
-      const areaBhkData = localStorage.getItem('areaBhkData');
-      const finalData = localStorage.getItem('finalFormData');
-      
-      const raw = finalData || completeData || areaBhkData;
-      if (raw) {
-        try {
-          previousFormData = JSON.parse(raw);
-          console.log("Loaded previous data:", previousFormData);
-        } catch(e) { console.warn(e); }
+      // Load previously selected spaces data (from step 1)
+      const spacesStored = localStorage.getItem('spacesFormData');
+      if (spacesStored) {
+        spacesFormData = JSON.parse(spacesStored);
+        console.log("Loaded spaces data:", spacesFormData);
       }
 
-      // Also load individual step data
-      const spacesData = localStorage.getItem('spacesFormData');
-      const serviceData = localStorage.getItem('serviceFormData');
-      const projectData = localStorage.getItem('projectType');
-      
-      if (spacesData) Object.assign(previousFormData, JSON.parse(spacesData));
-      if (serviceData) Object.assign(previousFormData, JSON.parse(serviceData));
-      if (projectData) Object.assign(previousFormData, JSON.parse(projectData));
-
-      // Preselect budget if returning
-      const savedBudget = localStorage.getItem('completeBudgetFormData');
-      if (savedBudget) {
-        try {
-          const saved = JSON.parse(savedBudget);
-          if (saved.budget) {
-            const value = saved.budget;
-            const option = Array.from(options).find(opt => 
-              opt.querySelector('input').value === value
-            );
-            if (option) {
-              options.forEach(opt => opt.classList.remove('selected'));
-              option.classList.add('selected');
-              const radio = option.querySelector('input');
-              radio.checked = true;
-              formData.budget = value;
-              continueBtn.disabled = false;
-            }
+      // Preselect previously chosen service type if available
+      const stored = localStorage.getItem('serviceFormData');
+      if (stored) {
+        const saved = JSON.parse(stored);
+        if (saved.serviceType) {
+          const option = Array.from(options).find(opt => 
+            opt.querySelector('input').value === saved.serviceType
+          );
+          if (option) {
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            const radio = option.querySelector('input');
+            radio.checked = true;
+            formData.serviceType = saved.serviceType;
+            continueBtn.disabled = false;
           }
-        } catch(e) { console.warn(e); }
-      } else if (previousFormData.budget) {
-        const value = previousFormData.budget;
-        const option = Array.from(options).find(opt => 
-          opt.querySelector('input').value === value
-        );
-        if (option) {
-          options.forEach(opt => opt.classList.remove('selected'));
-          option.classList.add('selected');
-          const radio = option.querySelector('input');
-          radio.checked = true;
-          formData.budget = value;
-          continueBtn.disabled = false;
         }
       }
-    }
+    });
 
     function setupEventListeners() {
-      // Budget selection
+      // Service type selection
       options.forEach(option => {
         option.addEventListener('click', function(e) {
           // Remove previous selection
           options.forEach(opt => opt.classList.remove('selected'));
-          // Add selection to clicked option
           this.classList.add('selected');
           
-          // Enable continue button
+          const radio = this.querySelector('input[type="radio"]');
+          radio.checked = true;
+          formData.serviceType = radio.value;
+          
           continueBtn.disabled = false;
           
-          // Store selection
-          const radio = this.querySelector('input[type="radio"]');
-          formData.budget = radio.value;
-          
-          console.log("Budget selected:", formData.budget);
-          
-          // Save to localStorage immediately
-          saveToLocalStorage();
+          // Store data in localStorage
+          localStorage.setItem('serviceFormData', JSON.stringify(formData));
+          console.log("Service type selected:", formData.serviceType);
         });
       });
 
@@ -392,53 +327,37 @@
         closeBtn.addEventListener('click', closeModal);
       }
 
-      // Back button
+      // Back button - go to previous step (space-type page)
       if (backBtn) {
         backBtn.addEventListener('click', goBack);
       }
     }
 
-    function saveToLocalStorage() {
-      // Combine all forms data
+    function continueToNext() {
+      if (!formData.serviceType) return;
+      
+      // Merge spaces data and service data for complete form
       const completeFormData = {
-        ...previousFormData,
+        ...spacesFormData,
         ...formData,
         timestamp: new Date().toISOString()
       };
       
-      // Store complete data
-      localStorage.setItem('completeBudgetFormData', JSON.stringify(completeFormData));
+      // Store combined data for next pages
+      localStorage.setItem('serviceFormData', JSON.stringify(formData));
       localStorage.setItem('completeFormData', JSON.stringify(completeFormData));
+      
+      // Redirect to next step (project-type / property size page)
+      window.location.href = 'project-type.html';
     }
 
     function goBack() {
-      // Go back to the area/BHK selection form
-      window.location.href = 'property-size.html';
-    }
-
-    function continueToNext() {
-      if (!formData.budget) return;
-      
-      console.log('Budget selected:', formData);
-      
-      // Combine all forms data
-      const completeFormData = {
-        ...previousFormData,
-        ...formData,
-        completedAt: new Date().toISOString()
-      };
-      
-      // Store complete data
-      localStorage.setItem('completeBudgetFormData', JSON.stringify(completeFormData));
-      localStorage.setItem('completeFormData', JSON.stringify(completeFormData));
-      localStorage.setItem('finalFormData', JSON.stringify(completeFormData));
-      
-      // Redirect to the hiring likelihood form
-      window.location.href = 'hiring-likelihood.html';
+      // Go back to space selection page
+      window.location.href = 'index.html';
     }
 
     function closeModal() {
-      // Do nothing - stay on the same page
+      // Do nothing - stay on the same page (prevents white screen)
       console.log('Close clicked - staying on page');
     }
 

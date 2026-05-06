@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interior Service | Space Type</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f5f0ea;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Warm gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #faf7f2 0%, #f0e8e0 100%);
+      z-index: 0;
+    }
+
+    /* Subtle pattern */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#c4a47c 0.5px, transparent 0.5px);
+      background-size: 24px 24px;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 600px;
+      padding: 24px;
+    }
+
+    /* Main card */
+    .space-selector {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(140, 108, 85, 0.1);
+      overflow: hidden;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #f0e8e0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .progress {
+      width: 50%;
+      height: 100%;
+      background: #8c6c55;
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c241a;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .subhead {
+      text-align: center;
+      color: #9b8978;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    /* Property type badge */
+    .property-badge {
+      display: inline-block;
+      background: #f5ede6;
+      padding: 6px 14px;
+      border-radius: 60px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #8c6c55;
+      margin-bottom: 20px;
+      text-align: center;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Options grid */
+    .options-grid {
+      padding: 0 52px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #ede3d8;
+      border-radius: 16px;
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #ffffff;
+    }
+    .option:hover {
+      border-color: #c4a47c;
+      background: #fefcf9;
+    }
+    .option.selected {
+      border-color: #8c6c55;
+      background: #fffaf5;
+      box-shadow: 0 4px 12px rgba(140, 108, 85, 0.1);
+    }
+    .option input {
+      margin-right: 14px;
+      width: 18px;
+      height: 18px;
+      accent-color: #8c6c55;
+      cursor: pointer;
+    }
+    .option-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: #2c241a;
+    }
+    .option.selected .option-text {
+      color: #8c6c55;
+    }
+
+    /* Button container - side by side buttons */
+    .btn-container {
+      display: flex;
+      gap: 16px;
+      padding: 10px 52px 40px;
+      width: 100%;
+    }
+
+    /* Button styles */
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .btn-back {
+      background: #f5ede6;
+      color: #8c6c55;
+      border: 1px solid #ede3d8;
+    }
+
+    .btn-back:hover {
+      background: #efe5db;
+      transform: translateY(-1px);
+    }
+
+    .btn-continue {
+      background: #8c6c55;
+      color: #fff;
+    }
+
+    .btn-continue:hover:not(:disabled) {
+      background: #7a5b46;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(140, 108, 85, 0.25);
+    }
+
+    .btn-continue:disabled {
+      background: #d4c5b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Close button */
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 26px;
+      cursor: pointer;
+      color: #b8a694;
+      transition: all 0.2s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f8f3ee;
+    }
+    .close:hover {
+      color: #8c6c55;
+      background: #efe5db;
+      transform: rotate(90deg);
+    }
+
+    /* Error state */
+    .error-message {
+      text-align: center;
+      padding: 40px 20px;
+      color: #b8a694;
+    }
+    .error-message span {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .error-btn {
+      background: #8c6c55;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .options-grid {
+        padding: 0 24px 20px;
+      }
+      .btn-container {
+        padding: 10px 24px 32px;
+        gap: 12px;
+      }
+      h2 {
+        font-size: 20px;
+      }
+      .btn {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="space-selector">
+      <!-- <span class="close" id="closeBtn">&times;</span> -->
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="progress" id="progressBar"></div>
+      </div>
+
+      <!-- Header -->
+      <div class="options-grid">
+        <div class="property-badge" id="propertyTypeBadge">Loading...</div>
+        <h2 id="mainHeading">What type of Spaces?</h2>
+        <div class="subhead" id="subheadText">Select the category that best describes your space</div>
+      </div>
+
+      <!-- Options - dynamically populated based on property type -->
+      <div class="options-grid" id="optionsGrid">
+        <!-- Options will be inserted here dynamically -->
+      </div>
+
+      <!-- Buttons in one line (side by side) -->
+      <div class="btn-container">
+        <button class="btn btn-back" id="backBtn">← Back</button>
+        <button class="btn btn-continue" id="continueBtn" disabled>Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let formData = {};
+    let propertyType = null;
+    let allFormData = {};
+
+    // DOM elements
+    const optionsGrid = document.getElementById('optionsGrid');
+    const continueBtn = document.getElementById('continueBtn');
+    const backBtn = document.getElementById('backBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const propertyTypeBadge = document.getElementById('propertyTypeBadge');
+    const mainHeading = document.getElementById('mainHeading');
+    const subheadText = document.getElementById('subheadText');
+
+    // Define options based on property type
+    const RESIDENTIAL_OPTIONS = [
+      { value: "1 BHK", label: "1 BHK", icon: "" },
+      { value: "2 BHK", label: "2 BHK", icon: "" },
+      { value: "3 BHK", label: "3 BHK", icon: "" },
+      { value: "4 BHK", label: "4 BHK", icon: "" },
+      // { value: "5 BHK", label: "5 BHK", icon: "" },
+      { value: "5+ BHK", label: "5+ BHK", icon: "" }
+    ];
+
+    const COMMERCIAL_OPTIONS = [
+      { value: "Office", label: "Office", icon: "🏢" },
+      { value: "Retail", label: "Retail", icon: "🛍️" },
+      { value: "F & B", label: "F & B", icon: "🍽️" }
+    ];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      continueBtn.disabled = true;
+      loadPropertyType();
+      loadSavedData();
+      setupEventListeners();
+      renderOptions();
+    });
+
+    function loadPropertyType() {
+      // Get property type from localStorage (set in property-type page)
+      const storedProperty = localStorage.getItem('propertyFormData');
+      if (storedProperty) {
+        try {
+          const parsed = JSON.parse(storedProperty);
+          propertyType = parsed.property_type;
+          console.log("Property type loaded:", propertyType);
+        } catch(e) { console.warn(e); }
+      }
+      
+      // Also check completeFormData
+      if (!propertyType) {
+        const completeData = localStorage.getItem('completeFormData');
+        if (completeData) {
+          try {
+            const parsed = JSON.parse(completeData);
+            propertyType = parsed.property_type;
+            console.log("Property type from completeData:", propertyType);
+          } catch(e) { console.warn(e); }
+        }
+      }
+      
+      // Update badge and heading
+      if (propertyType === "Residential") {
+        propertyTypeBadge.innerHTML = "🏠 Residential Property";
+        mainHeading.innerHTML = "What type of BHK?";
+        subheadText.innerHTML = "Select your preferred BHK configuration";
+      } else if (propertyType === "Commercial") {
+        propertyTypeBadge.innerHTML = "🏢 Commercial Property";
+        mainHeading.innerHTML = "What type of Space?";
+        subheadText.innerHTML = "Select the category that best describes your commercial space";
+      } else {
+        propertyTypeBadge.innerHTML = "❓ Select Property Type First";
+        mainHeading.innerHTML = "Please go back";
+        subheadText.innerHTML = "You need to select property type first";
+      }
+    }
+
+    function renderOptions() {
+      if (!optionsGrid) return;
+      
+      optionsGrid.innerHTML = '';
+      
+      let options = [];
+      if (propertyType === "Residential") {
+        options = RESIDENTIAL_OPTIONS;
+      } else if (propertyType === "Commercial") {
+        options = COMMERCIAL_OPTIONS;
+      } else {
+        // Show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `
+          <span>⚠️</span>
+          <p>Property type not selected. Please go back and select property type.</p>
+          <button class="error-btn" id="goBackBtn">Go Back</button>
+        `;
+        optionsGrid.appendChild(errorDiv);
+        
+        const goBackBtn = document.getElementById('goBackBtn');
+        if (goBackBtn) {
+          goBackBtn.addEventListener('click', () => {
+            window.location.href = 'property-type.html';
+          });
+        }
+        return;
+      }
+      
+      // Render options
+      options.forEach(opt => {
+        const label = document.createElement('label');
+        label.className = 'option';
+        label.setAttribute('data-value', opt.value);
+        label.innerHTML = `
+          <input type="radio" name="type_of_space" value="${opt.value}">
+          <span class="option-text">${opt.icon || ''} ${opt.label}</span>
+        `;
+        
+        label.addEventListener('click', function(e) {
+          // Remove selected class from all options
+          document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          const radio = this.querySelector('input[type="radio"]');
+          radio.checked = true;
+          
+          // Store in formData with appropriate key
+          if (propertyType === "Residential") {
+            formData.bhk_type = radio.value;
+            formData.type_of_space = radio.value;
+          } else {
+            formData.type_of_space = radio.value;
+          }
+          
+          continueBtn.disabled = false;
+          
+          // Save to localStorage
+          saveToLocalStorage();
+          console.log("Space type selected:", formData);
+        });
+        
+        optionsGrid.appendChild(label);
+      });
+    }
+
+    function loadSavedData() {
+      // Load previously saved space data
+      const stored = localStorage.getItem('spacesFormData');
+      if (stored) {
+        try {
+          const saved = JSON.parse(stored);
+          if (saved.type_of_space || saved.bhk_type) {
+            formData = saved;
+            console.log("Loaded saved space data:", formData);
+          }
+        } catch(e) { console.warn(e); }
+      }
+      
+      // Also check completeFormData
+      const completeData = localStorage.getItem('completeFormData');
+      if (completeData) {
+        try {
+          const parsed = JSON.parse(completeData);
+          if (parsed.type_of_space && !formData.type_of_space) {
+            formData.type_of_space = parsed.type_of_space;
+          }
+          if (parsed.bhk_type && !formData.bhk_type) {
+            formData.bhk_type = parsed.bhk_type;
+          }
+          allFormData = parsed;
+        } catch(e) { console.warn(e); }
+      }
+    }
+
+    function saveToLocalStorage() {
+      // Save spaces data
+      localStorage.setItem('spacesFormData', JSON.stringify(formData));
+      
+      // Update completeFormData
+      const existingData = localStorage.getItem('completeFormData');
+      let completeData = {};
+      if (existingData) {
+        try {
+          completeData = JSON.parse(existingData);
+        } catch(e) {}
+      }
+      
+      completeData.type_of_space = formData.type_of_space;
+      if (formData.bhk_type) {
+        completeData.bhk_type = formData.bhk_type;
+      }
+      completeData.property_type = propertyType;
+      
+      localStorage.setItem('completeFormData', JSON.stringify(completeData));
+      
+      console.log("Saved to localStorage:", formData);
+    }
+
+    function setupEventListeners() {
+      // Close button
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+      }
+      
+      // Back button
+      if (backBtn) {
+        backBtn.addEventListener('click', goBack);
+      }
+    }
+
+    function continueToNext() {
+      if (!formData.type_of_space && !formData.bhk_type) return;
+      
+      // Ensure type_of_space is set
+      if (propertyType === "Residential" && formData.bhk_type && !formData.type_of_space) {
+        formData.type_of_space = formData.bhk_type;
+      }
+      
+      console.log("Space type selected - continuing:", formData);
+      
+      // Save final data
+      saveToLocalStorage();
+      
+      // Update completeFormData
+      const existingData = localStorage.getItem('completeFormData');
+      let completeData = {};
+      if (existingData) {
+        try {
+          completeData = JSON.parse(existingData);
+        } catch(e) {}
+      }
+      
+      completeData.type_of_space = formData.type_of_space;
+      if (formData.bhk_type) {
+        completeData.bhk_type = formData.bhk_type;
+      }
+      completeData.property_type = propertyType;
+      
+      localStorage.setItem('completeFormData', JSON.stringify(completeData));
+      localStorage.setItem('spacesFormData', JSON.stringify(formData));
+      
+      // Redirect to next step (service-type.html)
+      window.location.href = 'service-type.html';
+    }
+
+    function goBack() {
+      // Save current data before going back
+      if (formData.type_of_space || formData.bhk_type) {
+        saveToLocalStorage();
+      }
+      window.location.href = 'index.html';
+    }
+
+    function closeModal() {
+      console.log('Close clicked - staying on page');
+    }
+
+    // Close modal when clicking outside
+    document.querySelector('.container')?.addEventListener('click', function(e) {
+      if (e.target === document.querySelector('.container')) {
+        closeModal();
+      }
+    });
+
+    // Attach continue button handler
+    continueBtn.addEventListener('click', continueToNext);
+    
+    // Preselect previously chosen option if available
+    function preselectOption() {
+      setTimeout(() => {
+        const savedValue = formData.type_of_space || formData.bhk_type;
+        if (savedValue) {
+          const options = document.querySelectorAll('.option');
+          options.forEach(option => {
+            const radio = option.querySelector('input');
+            if (radio && radio.value === savedValue) {
+              option.classList.add('selected');
+              radio.checked = true;
+              continueBtn.disabled = false;
+            }
+          });
+        }
+      }, 100);
+    }
+    
+    // Call preselect after render
+    const observer = new MutationObserver(function(mutations) {
+      preselectOption();
+      observer.disconnect();
+    });
+    observer.observe(optionsGrid, { childList: true, subtree: true });
+  </script>
+</body>
+</html>

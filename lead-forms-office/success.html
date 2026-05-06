@@ -3,51 +3,440 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Request Submitted</title>
+  <title>Request Submitted | Interior Service</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; justify-content: center; align-items: center; }
-    .modal { background: #fff; width: 600px; max-width: 92vw; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); padding: 32px; text-align: center; position: relative; }
-    .check { width: 90px; height: 90px; border-radius: 50%; background: #10b981; color: #fff; display: grid; place-items: center; font-size: 48px; margin: 0 auto 16px; }
-    h2 { font-size: 26px; color: #0f172a; margin: 8px 0; }
-    p { color: #374151; margin: 0 0 18px; }
-    .btn { background: #10b981; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f5f0ea;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #faf7f2 0%, #f0e8e0 100%);
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#c4a47c 0.5px, transparent 0.5px);
+      background-size: 24px 24px;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 550px;
+      padding: 24px;
+    }
+
+    .success-card {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(140, 108, 85, 0.1);
+      overflow: hidden;
+      text-align: center;
+      padding: 20px 40px 20px;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8c6c55, #a8826a);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      animation: scaleIn 0.4s ease-out 0.2s both;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-icon svg {
+      width: 55px;
+      height: 55px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2c241a;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #9b8978;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: #8c6c55;
+      margin: 20px auto;
+      border-radius: 3px;
+    }
+
+    .contact-box {
+      background: #fefcf9;
+      border: 1px solid #ede3d8;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+
+    .contact-box p {
+      color: #5c4a3a;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .contact-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #f5ede6;
+      padding: 12px 24px;
+      border-radius: 60px;
+      margin-top: 8px;
+    }
+
+    .contact-number a {
+      font-size: 20px;
+      font-weight: 700;
+      color: #8c6c55;
+      text-decoration: none;
+    }
+
+    .contact-number a:hover {
+      text-decoration: underline;
+    }
+
+    .website-link {
+      color: #8c6c55;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .website-link:hover {
+      text-decoration: underline;
+    }
+
+    .next-steps {
+      text-align: left;
+      background: #fefcf9;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .next-steps h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2c241a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .next-steps ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .next-steps li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      color: #5c4a3a;
+      font-size: 14px;
+      border-bottom: 1px solid #ede3d8;
+    }
+
+    .next-steps li:last-child {
+      border-bottom: none;
+    }
+
+    .step-icon {
+      width: 28px;
+      height: 28px;
+      background: #f5ede6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #8c6c55;
+    }
+
+    .btn {
+      background: #8c6c55;
+      color: #ffffff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: #7a5b46;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(140, 108, 85, 0.25);
+    }
+
+    .btn-secondary {
+      background: #f5ede6;
+      color: #8c6c55;
+      border: 1px solid #ede3d8;
+      margin-top: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: #efe5db;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 550px) {
+      .success-card {
+        padding: 32px 24px 36px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      .subtitle {
+        font-size: 14px;
+      }
+      .contact-number a {
+        font-size: 18px;
+      }
+      .contact-number {
+        padding: 8px 20px;
+      }
+      .success-icon {
+        width: 80px;
+        height: 80px;
+      }
+      .success-icon svg {
+        width: 45px;
+        height: 45px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="modal">
-      <div class="check">✓</div>
-      <h2>Your request is successfully submitted</h2>
-      <p>Thanks for reaching out. We'll get back to you soon.</p>
-      <p>You may visit our website <a href="https://zuhouz.com">zuhouz.com</a> or call us at <a href="tel:9967852454">9967852454</a></p>
-      <button class="btn" onclick="finish()">Close</button>
+  <div class="container">
+    <div class="success-card">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <h1>✨ Request Submitted!</h1>
+      <div class="subtitle">
+        Thank you for sharing your project details with us.<br>
+        Our team will review your requirements and reach out shortly.
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="next-steps">
+        <h3>
+          <span>📋</span> What happens next?
+        </h3>
+        <ul>
+          <li>
+            <span class="step-icon">1</span>
+            <span>Our design consultant will contact you within 24 hours</span>
+          </li>
+          <li>
+            <span class="step-icon">2</span>
+            <span>We'll schedule a consultation to understand your vision better</span>
+          </li>
+          <li>
+            <span class="step-icon">3</span>
+            <span>You'll receive curated design solutions tailored to your needs</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="contact-box">
+        <p>📞 Need immediate assistance? Reach us at:</p>
+        <div class="contact-number">
+          <span>📱</span>
+          <a href="tel:9967852454">+91 99678 52454</a>
+        </div>
+        <p style="margin-top: 16px; margin-bottom: 0;">
+          🌐 Visit our website: 
+          <a href="https://zuhouz.com" class="website-link" target="_blank">zuhouz.com</a>
+        </p>
+      </div>
+
+      <button class="btn" id="closeBtn">Close & Start New Request</button>
+      <button class="btn btn-secondary" id="stayBtn">Stay on Page</button>
     </div>
   </div>
+
   <script>
+    // All localStorage keys to clear
+    const FORM_KEYS_TO_CLEAR = [
+      'completeNameFormData',
+      'completePhoneFormData', 
+      'completeEmailFormData',
+      'completeMatchConfirmationData',
+      'completeBudgetFormData',
+      'completeHiringFormData',
+      'locationData',
+      'serviceFormData',
+      'projectType',
+      'propertyType',
+      'completeAreaFormData',
+      'areaBhkData',
+      'otp_session_id',
+      'otp_verified',
+      'user_verified',
+      'spacesFormData',
+      'propertyFormData',
+      "completeFormData",
+      "finalFormData",
+      "submittedFormData",
+      'areaData'
+    ];
+
+    // Clear all form data from localStorage
+    function clearFormData() {
+      FORM_KEYS_TO_CLEAR.forEach(key => {
+        localStorage.removeItem(key);
+      });
+      
+      // Keep only submission confirmation
+      const finalData = localStorage.getItem('finalFormData');
+      if (finalData) {
+        try {
+          const parsed = JSON.parse(finalData);
+          localStorage.setItem('submittedFormData', JSON.stringify({
+            submittedAt: new Date().toISOString(),
+            customer_name: parsed.name,
+            customer_email: parsed.email,
+            customer_contact: parsed.phone
+          }));
+        } catch(e) {}
+      }
+      
+      console.log('Form data cleared from localStorage');
+    }
+
+    // Option 1: Clear and redirect to start new form
+    function startNewRequest() {
+      clearFormData();
+      window.location.href = 'index.html';
+    }
+
+    // Option 2: Just clear and stay (or just stay without clearing)
+    function stayOnPage() {
+      // Do not clear - user might want to reference data
+      console.log('Staying on page, data preserved');
+    }
+
+    // Option 3: Auto-clear after 5 minutes (optional)
+    function scheduleAutoClear() {
+      setTimeout(() => {
+        const hasFormData = FORM_KEYS_TO_CLEAR.some(key => localStorage.getItem(key));
+        if (hasFormData) {
+          console.log('Auto-clearing stale form data after timeout');
+          clearFormData();
+        }
+      }, 5 * 60 * 1000); // 5 minutes
+    }
+
     // Check if form was submitted successfully
     document.addEventListener('DOMContentLoaded', () => {
-      const formData = localStorage.getItem('completeNameFormData');
+      const formData = localStorage.getItem('completeNameFormData') || 
+                       localStorage.getItem('finalFormData') || 
+                       localStorage.getItem('completeFormData');
+      
       if (!formData) {
-        // No form data found, redirect back to start
+        console.log('No form data found, redirecting to start');
         window.location.href = 'index.html';
         return;
       }
       
-      // Clear form data after successful submission
-      localStorage.removeItem('completeNameFormData');
-      localStorage.removeItem('completePhoneFormData');
-      localStorage.removeItem('completeEmailFormData');
-      localStorage.removeItem('completeMatchConfirmationData');
+      // Schedule auto-clear after 5 minutes
+      scheduleAutoClear();
     });
 
-    function finish(){
-      // Close current tab if allowed, otherwise redirect to root
-      window.close();
-      if (!window.closed) {
-        window.location.href = '/lead-forms-office/index.html';
-      }
+    // Attach event listeners
+    const closeBtn = document.getElementById('closeBtn');
+    const stayBtn = document.getElementById('stayBtn');
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', startNewRequest);
     }
+    
+    if (stayBtn) {
+      stayBtn.addEventListener('click', stayOnPage);
+    }
+
+    // Also clear on page unload (optional - when user closes tab)
+    window.addEventListener('beforeunload', () => {
+      // This will run when user closes the tab
+      // Be careful - this may clear data if user wants to come back
+      // Comment out if you don't want this behavior
+      // clearFormData();
+    });
   </script>
 </body>
 </html>

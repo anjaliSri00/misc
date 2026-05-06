@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Design Daily | Property Area & BHK Selection</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f5f0ea;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #faf7f2 0%, #f0e8e0 100%);
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#c4a47c 0.5px, transparent 0.5px);
+      background-size: 24px 24px;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .form-container {
+      position: relative;
+      z-index: 10;
+      max-width: 620px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      background: transparent;
+    }
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      background: #ffffff;
+      border: 2px solid #e0d2c5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #b8a694;
+      background: #ffffff;
+      transition: all 0.2s;
+      z-index: 2;
+    }
+    .step-item.active .step-circle {
+      border-color: #8c6c55;
+      background: #8c6c55;
+      color: white;
+      box-shadow: 0 4px 10px rgba(140, 108, 85, 0.25);
+    }
+    .step-item.completed .step-circle {
+      border-color: #8c6c55;
+      background: #8c6c55;
+      color: white;
+    }
+    .step-label {
+      font-size: 0.7rem;
+      margin-top: 8px;
+      color: #b8a694;
+      font-weight: 500;
+    }
+    .step-item.active .step-label {
+      color: #8c6c55;
+      font-weight: 600;
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #e6d9cf;
+      margin: 0 8px;
+      position: relative;
+      top: -12px;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(140, 108, 85, 0.08);
+      padding: 28px 30px 36px;
+      transition: all 0.2s;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #f0e8e0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .progress {
+      width: 75%;
+      height: 100%;
+      background: #8c6c55;
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #2c241a;
+      margin-bottom: 8px;
+    }
+
+    .subhead {
+      font-size: 0.9rem;
+      color: #9b8978;
+      margin-bottom: 28px;
+      border-left: 3px solid #8c6c55;
+      padding-left: 12px;
+    }
+
+    .selected-bhk-badge {
+      background: #f5ede6;
+      border-radius: 60px;
+      padding: 8px 16px;
+      display: inline-block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      color: #8c6c55;
+      font-weight: 500;
+    }
+
+    .area-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin: 20px 0 24px;
+    }
+    .area-option {
+      background: #fefcf9;
+      border: 1.5px solid #ede3d8;
+      border-radius: 12px;
+      padding: 16px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .area-option:hover {
+      border-color: #c4a47c;
+      background: #ffffff;
+      transform: translateY(-2px);
+    }
+    .area-option.selected {
+      border-color: #8c6c55;
+      background: #fffaf5;
+      box-shadow: 0 8px 18px rgba(140, 108, 85, 0.1);
+    }
+    .area-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #2c241a;
+    }
+    .area-desc {
+      font-size: 0.7rem;
+      color: #b8a694;
+      margin-top: 6px;
+    }
+
+    /* Description field */
+    .description-section {
+      margin-top: 24px;
+      padding-top: 8px;
+      border-top: 1px solid #efe5db;
+    }
+    .description-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #5c4a3a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .description-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #ede3d8;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #ffffff;
+      resize: vertical;
+      transition: all 0.2s;
+    }
+    .description-input:focus {
+      outline: none;
+      border-color: #8c6c55;
+      box-shadow: 0 0 0 3px rgba(140, 108, 85, 0.1);
+    }
+    .description-input::placeholder {
+      color: #c4b8a8;
+    }
+    .char-count {
+      text-align: right;
+      font-size: 11px;
+      color: #b8a694;
+      margin-top: 6px;
+    }
+
+    .custom-area-row {
+      margin-top: 18px;
+      background: #fefcf9;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 1px solid #efe5db;
+    }
+    .flex-input {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .flex-input input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #ede3d8;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      outline: none;
+      font-weight: 500;
+      background: #ffffff;
+    }
+    .flex-input input:focus {
+      border-color: #8c6c55;
+      box-shadow: 0 0 0 3px rgba(140, 108, 85, 0.15);
+    }
+    .badge-sqft {
+      background: #f5ede6;
+      padding: 8px 20px;
+      border-radius: 12px;
+      font-weight: 500;
+      color: #8c6c55;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 14px;
+      margin-top: 32px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px 0;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.95rem;
+    }
+    .btn-primary {
+      background: #8c6c55;
+      color: white;
+      box-shadow: 0 2px 8px rgba(140, 108, 85, 0.25);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #7a5b46;
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled {
+      background: #d4c5b8;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    .btn-secondary {
+      background: #f5ede6;
+      color: #8c6c55;
+      border: 1px solid #ede3d8;
+    }
+    .btn-secondary:hover {
+      background: #efe5db;
+    }
+    .footnote {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #b8a694;
+    }
+
+    @media (max-width: 550px) {
+      .modal-card { padding: 20px; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="form-container">
+
+  <div class="modal-card">
+    <div class="progress-bar">
+      <div class="progress"></div>
+    </div>
+
+    <h2>Property Size</h2>
+    <div class="subhead">Select your total sq. ft. range based on your BHK selection</div>
+
+    <div class="selected-bhk-badge" id="selectedBhkBadge">Loading...</div>
+
+    <div class="area-grid" id="areaGrid"></div>
+
+    <!-- Description Field -->
+    <div class="description-section">
+      <div class="description-label">
+        <span>📝</span> Tell us more about your project
+      </div>
+      <textarea id="descriptionInput" class="description-input" rows="3" placeholder="e.g., Looking for modern minimalist design, need space planning, specific color preferences, etc..."></textarea>
+      <div class="char-count">
+        <span id="charCount">0</span> characters
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-secondary" id="backBtn">← Back</button>
+      <button class="btn btn-primary" id="continueBtn" disabled>Continue →</button>
+    </div>
+    <div class="footnote">* Area ranges are optimized for your selected BHK configuration</div>
+  </div>
+</div>
+
+<script>
+  // BHK to Area Range Mapping
+  const BHK_AREA_MAPPING = {
+    "1 BHK": [
+      { label: "Up to 1000 sqft", min: 0, max: 1000 }
+    ],
+    "2 BHK": [
+      { label: "Up to 1000 sqft", min: 0, max: 1000 },
+      { label: "1000 - 2000 sqft", min: 1000, max: 2000 }
+    ],
+    "3 BHK": [
+      { label: "1000 - 2000 sqft", min: 1000, max: 2000 },
+      { label: "2000 - 4000 sqft", min: 2000, max: 4000 }
+    ],
+    "4 BHK": [
+      { label: "2000 - 4000 sqft", min: 2000, max: 4000 }
+    ],
+    "5+ BHK": [
+      { label: "2000 - 4000 sqft", min: 2000, max: 4000 },
+      { label: "4000+ sqft", min: 4000, max: Infinity }
+    ]
+  };
+
+  // Default area rules for fallback
+  const DEFAULT_AREA_RULES = [
+    { label: "Up to 1000 sqft", min: 0, max: 1000 },
+    { label: "1000 - 2000 sqft", min: 1000, max: 2000 },
+    { label: "2000 - 4000 sqft", min: 2000, max: 4000 },
+    { label: "4000+ sqft", min: 4000, max: Infinity }
+  ];
+
+  let selectedBHK = null;
+  let selectedAreaIndex = null;
+  let customAreaNumber = null;
+  let currentAreaOptions = [];
+  let previousFormData = {};
+  let description = '';
+
+  const areaGrid = document.getElementById('areaGrid');
+  const continueBtn = document.getElementById('continueBtn');
+  const backBtn = document.getElementById('backBtn');
+  const customSqftInput = document.getElementById('customSqft');
+  const selectedBhkBadge = document.getElementById('selectedBhkBadge');
+  const descriptionInput = document.getElementById('descriptionInput');
+  const charCountSpan = document.getElementById('charCount');
+
+  // Load selected BHK from previous step (space-type.html)
+  function loadSelectedBHK() {
+    const spacesData = localStorage.getItem('spacesFormData');
+    if (spacesData) {
+      try {
+        const parsed = JSON.parse(spacesData);
+        if (parsed.bhk_type) {
+          selectedBHK = parsed.bhk_type;
+        } else if (parsed.type_of_space && ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5 BHK", "5+ BHK"].includes(parsed.type_of_space)) {
+          selectedBHK = parsed.type_of_space;
+        }
+      } catch(e) {}
+    }
+
+    const completeData = localStorage.getItem('completeFormData');
+    if (completeData && !selectedBHK) {
+      try {
+        const parsed = JSON.parse(completeData);
+        if (parsed.bhk_type) {
+          selectedBHK = parsed.bhk_type;
+        } else if (parsed.type_of_space && ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5 BHK", "5+ BHK"].includes(parsed.type_of_space)) {
+          selectedBHK = parsed.type_of_space;
+        }
+      } catch(e) {}
+    }
+
+    const propertyData = localStorage.getItem('propertyFormData');
+    if (propertyData && !selectedBHK) {
+      try {
+        const parsed = JSON.parse(propertyData);
+        if (parsed.bhk_type) {
+          selectedBHK = parsed.bhk_type;
+        }
+      } catch(e) {}
+    }
+
+    if (selectedBHK) {
+      selectedBhkBadge.innerHTML = `🏠 Selected: ${selectedBHK}`;
+    } else {
+      selectedBhkBadge.innerHTML = `⚠️ Please select BHK type first`;
+    }
+
+    console.log("Loaded selected BHK:", selectedBHK);
+  }
+
+  // Get area options based on selected BHK
+  function getAreaOptionsForBHK() {
+    if (selectedBHK && BHK_AREA_MAPPING[selectedBHK]) {
+      return BHK_AREA_MAPPING[selectedBHK];
+    }
+    return DEFAULT_AREA_RULES;
+  }
+
+  // Render area cards based on selected BHK
+  function renderAreaCards() {
+    areaGrid.innerHTML = '';
+    
+    if (!selectedBHK) {
+      const errorDiv = document.createElement('div');
+      errorDiv.style.gridColumn = '1/-1';
+      errorDiv.style.textAlign = 'center';
+      errorDiv.style.padding = '40px';
+      errorDiv.style.background = '#fefcf9';
+      errorDiv.style.borderRadius = '12px';
+      errorDiv.style.border = '1px solid #efe5db';
+      errorDiv.innerHTML = `
+        <span style="font-size: 48px; display: block; margin-bottom: 16px;">⚠️</span>
+        <p style="color: #8c6c55; margin-bottom: 16px;">No BHK type selected</p>
+        <p style="color: #b8a694; font-size: 14px;">Please go back and select your BHK configuration first.</p>
+      `;
+      areaGrid.appendChild(errorDiv);
+      return;
+    }
+
+    currentAreaOptions = getAreaOptionsForBHK();
+    
+    currentAreaOptions.forEach((option, idx) => {
+      const card = document.createElement('div');
+      card.className = 'area-option';
+      if (selectedAreaIndex === idx) card.classList.add('selected');
+      card.innerHTML = `
+        <div class="area-title">${option.label}</div>
+        <div class="area-desc">Recommended for ${selectedBHK}</div>
+      `;
+      card.addEventListener('click', () => {
+        if (customSqftInput) customSqftInput.value = '';
+        customAreaNumber = null;
+        selectedAreaIndex = idx;
+        document.querySelectorAll('.area-option').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        enableContinue();
+        saveToLocalStorage();
+      });
+      areaGrid.appendChild(card);
+    });
+  }
+
+  function handleCustomArea(value) {
+    const numeric = parseFloat(value);
+    if (isNaN(numeric) || numeric <= 0) {
+      if (selectedAreaIndex === null && !customAreaNumber) {
+        enableContinue();
+      }
+      return;
+    }
+    
+    if (selectedAreaIndex !== null) {
+      selectedAreaIndex = null;
+      document.querySelectorAll('.area-option').forEach(c => c.classList.remove('selected'));
+    }
+    customAreaNumber = numeric;
+    enableContinue();
+    saveToLocalStorage();
+  }
+
+ function enableContinue() {
+    // Get current description value
+    const descriptionValue = descriptionInput ? descriptionInput.value.trim() : '';
+    
+    // Check if both conditions are met
+    const isAreaSelected = (selectedAreaIndex !== null);
+    const isDescriptionFilled = (descriptionValue !== '');
+    const areaValid = isAreaSelected && isDescriptionFilled;
+    
+    // Debug logs to see what's happening
+    console.log('isAreaSelected:', isAreaSelected);
+    console.log('isDescriptionFilled:', isDescriptionFilled);
+    console.log('areaValid:', areaValid);
+    console.log('Button disabled:', !areaValid);
+    
+    // Button enable when areaValid is TRUE, disable when FALSE
+    continueBtn.disabled = !areaValid;
+}
+ 
+  function updateCharCount() {
+    const count = descriptionInput.value.length;
+    charCountSpan.textContent = count;
+    if (count > 0) {
+      charCountSpan.style.color = '#8c6c55';
+    } else {
+      charCountSpan.style.color = '#b8a694';
+    }
+  }
+
+  function saveToLocalStorage() {
+    let areaDetail = {};
+    if (selectedAreaIndex !== null && currentAreaOptions[selectedAreaIndex]) {
+      const option = currentAreaOptions[selectedAreaIndex];
+      areaDetail = {
+        areaType: "preset",
+        rangeLabel: option.label,
+        minSqft: option.min,
+        maxSqft: option.max === Infinity ? "4000+" : option.max
+      };
+    } else if (customAreaNumber !== null && customAreaNumber > 0) {
+      areaDetail = {
+        areaType: "custom",
+        areaSqFt: customAreaNumber,
+        display: `${customAreaNumber} sq ft`
+      };
+    }
+    
+    const combined = {
+      ...previousFormData,
+      propertyArea: areaDetail,
+      bhkConfiguration: selectedBHK,
+      property_size: areaDetail.rangeLabel || (customAreaNumber ? `${customAreaNumber} sq ft` : ''),
+      description: descriptionInput.value.trim(),
+      step: "area-selection",
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('completeFormData', JSON.stringify(combined));
+    localStorage.setItem('areaData', JSON.stringify(combined));
+  }
+
+  function loadPreviousData() {
+    try {
+      const completeData = localStorage.getItem('completeFormData');
+      if (completeData) {
+        previousFormData = JSON.parse(completeData);
+        if (previousFormData.description) {
+          descriptionInput.value = previousFormData.description;
+          updateCharCount();
+        }
+      }
+      
+      const spacesData = localStorage.getItem('spacesFormData');
+      const serviceData = localStorage.getItem('serviceFormData');
+      const projectData = localStorage.getItem('projectType');
+      
+      if (spacesData) Object.assign(previousFormData, JSON.parse(spacesData));
+      if (serviceData) Object.assign(previousFormData, JSON.parse(serviceData));
+      if (projectData) Object.assign(previousFormData, JSON.parse(projectData));
+    } catch(e) { console.warn(e); }
+  }
+
+  function restoreState() {
+    try {
+      const saved = localStorage.getItem('completeFormData');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.propertyArea) {
+          if (data.propertyArea.areaType === 'preset' && data.propertyArea.rangeLabel) {
+            const foundIdx = currentAreaOptions.findIndex(opt => opt.label === data.propertyArea.rangeLabel);
+            if (foundIdx !== -1) {
+              selectedAreaIndex = foundIdx;
+              setTimeout(() => {
+                const cards = document.querySelectorAll('.area-option');
+                cards.forEach((card, i) => {
+                  if (i === foundIdx) card.classList.add('selected');
+                  else card.classList.remove('selected');
+                });
+              }, 100);
+            }
+          } else if (data.propertyArea.areaType === 'custom' && data.propertyArea.areaSqFt) {
+            customAreaNumber = data.propertyArea.areaSqFt;
+            if (customSqftInput) customSqftInput.value = customAreaNumber;
+            handleCustomArea(customAreaNumber);
+          }
+        }
+        if (data.description) {
+          descriptionInput.value = data.description;
+          updateCharCount();
+        }
+        enableContinue();
+      }
+    } catch(e) { console.warn(e); }
+  }
+
+  function continueToNext() {
+    if (continueBtn.disabled) return;
+    
+    let areaFinal = {};
+    if (selectedAreaIndex !== null && currentAreaOptions[selectedAreaIndex]) {
+      const option = currentAreaOptions[selectedAreaIndex];
+      areaFinal = { range: option.label, min: option.min, max: option.max === Infinity ? "4000+" : option.max };
+    } else if (customAreaNumber && customAreaNumber > 0) {
+      areaFinal = { customSqft: customAreaNumber };
+    } else {
+      return;
+    }
+    
+    const finalForm = {
+      ...previousFormData,
+      propertyArea: areaFinal,
+      bhkConfiguration: selectedBHK,
+      property_size: areaFinal.range || (customAreaNumber ? `${customAreaNumber} sq ft` : ''),
+      description: descriptionInput.value.trim(),
+      completedAt: new Date().toISOString()
+    };
+    
+    localStorage.setItem('finalFormData', JSON.stringify(finalForm));
+    localStorage.setItem('completeFormData', JSON.stringify(finalForm));
+    
+    window.location.href = 'budget.html';
+  }
+
+  function goBack() {
+    saveToLocalStorage();
+    window.location.href = 'space-type.html';
+  }
+
+  function bindEvents() {
+    if (customSqftInput) {
+      customSqftInput.addEventListener('input', (e) => {
+        const val = e.target.value.trim();
+        if (val === "") {
+          customAreaNumber = null;
+          if (selectedAreaIndex === null) {
+            enableContinue();
+          }
+          saveToLocalStorage();
+        } else {
+          const num = parseFloat(val);
+          if (!isNaN(num) && num > 0) {
+            handleCustomArea(num);
+          } else {
+            if (selectedAreaIndex === null) {
+              enableContinue();
+            }
+          }
+        }
+      });
+    }
+    
+    if (descriptionInput) {
+      descriptionInput.addEventListener('input', () => {
+        updateCharCount();
+        saveToLocalStorage();
+        enableContinue();
+      });
+    }
+    
+    continueBtn.addEventListener('click', continueToNext);
+    backBtn.addEventListener('click', goBack);
+  }
+
+  function init() {
+    loadPreviousData();
+    loadSelectedBHK();
+    renderAreaCards();
+    bindEvents();
+    restoreState();
+    enableContinue();
+    updateCharCount();
+  }
+  
+  init();
+</script>
+</body>
+</html>
