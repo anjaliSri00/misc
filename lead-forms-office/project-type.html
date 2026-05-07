@@ -281,7 +281,7 @@
       
       if (raw) {
         previousFormData = JSON.parse(raw);
-        console.log("Loaded previous data:", previousFormData);
+        // console.log("Loaded previous data:", previousFormData);
       }
 
       // Load service form data if available
@@ -349,7 +349,7 @@
           const radio = this.querySelector('input[type="radio"]');
           formData.projectType = radio.value;
           
-          console.log("Project type selected:", formData.projectType);
+          // console.log("Project type selected:", formData.projectType);
         });
       });
 
@@ -372,7 +372,7 @@
     function continueToNext() {
       if (!formData.projectType) return;
       
-      console.log('Project type selected:', formData);
+      // console.log('Project type selected:', formData);
       
       // Combine all forms data
       const finalFormData = {

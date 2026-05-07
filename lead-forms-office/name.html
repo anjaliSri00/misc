@@ -24,7 +24,6 @@
       position: relative;
     }
 
-    /* Warm gradient background */
     body::before {
       content: '';
       position: fixed;
@@ -33,7 +32,6 @@
       z-index: 0;
     }
 
-    /* Subtle pattern */
     body::after {
       content: '';
       position: fixed;
@@ -45,7 +43,6 @@
       z-index: 0;
     }
 
-    /* Main container */
     .container {
       position: relative;
       z-index: 10;
@@ -54,7 +51,6 @@
       padding: 24px;
     }
 
-    /* Main card */
     .name-selector {
       background: #ffffff;
       border-radius: 20px;
@@ -62,7 +58,6 @@
       overflow: hidden;
     }
 
-    /* Progress bar */
     .progress-bar {
       width: 100%;
       height: 6px;
@@ -94,12 +89,10 @@
       font-size: 15px;
     }
 
-    /* Form container */
     .form-container {
       padding: 0 32px 20px;
     }
 
-    /* Label */
     .form-label {
       display: block;
       font-size: 14px;
@@ -108,7 +101,6 @@
       margin-bottom: 8px;
     }
 
-    /* Input wrapper */
     .input-wrapper {
       position: relative;
       border: 1.5px solid #ede3d8;
@@ -153,7 +145,6 @@
       color: #c4b8a8;
     }
 
-    /* Checkbox */
     .checkbox-wrapper {
       margin-top: 20px;
     }
@@ -177,7 +168,6 @@
       color: #5c4a3a;
     }
 
-    /* Terms */
     .terms {
       text-align: center;
       color: #b8a694;
@@ -194,7 +184,6 @@
       text-decoration: underline;
     }
 
-    /* Loading state */
     .loading {
       display: none;
       align-items: center;
@@ -220,7 +209,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Error message */
     .error-msg {
       color: #b91c1c;
       font-size: 12px;
@@ -233,7 +221,6 @@
       display: block;
     }
 
-    /* Button container */
     .btn-container {
       display: flex;
       gap: 16px;
@@ -241,7 +228,6 @@
       width: 100%;
     }
 
-    /* Button styles */
     .btn {
       flex: 1;
       padding: 14px 20px;
@@ -287,31 +273,6 @@
       transform: none;
     }
 
-    /* Close button */
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      font-size: 26px;
-      cursor: pointer;
-      color: #b8a694;
-      transition: all 0.2s;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: #f8f3ee;
-      z-index: 20;
-    }
-    .close:hover {
-      color: #8c6c55;
-      background: #efe5db;
-      transform: rotate(90deg);
-    }
-
-    /* Responsive */
     @media (max-width: 600px) {
       .form-container {
         padding: 0 20px 16px;
@@ -339,20 +300,15 @@
 <body>
   <div class="container">
     <div class="name-selector">
-      <!-- <span class="close" id="closeBtn">&times;</span> -->
-
-      <!-- Progress bar -->
       <div class="progress-bar">
         <div class="progress" id="progressBar"></div>
       </div>
 
-      <!-- Header -->
       <div class="form-container">
         <h1>👋 What's your name?</h1>
         <div class="subtitle">This helps us personalize your experience</div>
       </div>
 
-      <!-- Name Input -->
       <div class="form-container">
         <label class="form-label">Full name</label>
         <div class="input-wrapper">
@@ -362,7 +318,6 @@
         <div id="nameError" class="error-msg">Please enter your name (at least 2 characters)</div>
       </div>
 
-      <!-- Marketing Checkbox -->
       <div class="form-container checkbox-wrapper">
         <label class="checkbox">
           <input id="marketingOptIn" type="checkbox" checked />
@@ -370,18 +325,15 @@
         </label>
       </div>
 
-      <!-- Terms -->
       <div class="terms">
         By continuing, you agree to our <a href="#" target="_blank">Terms & Conditions</a> and <a href="#">Privacy Policy</a>
       </div>
 
-      <!-- Loading indicator -->
       <div id="loading" class="loading">
         <div class="spinner"></div>
         <span>Submitting your request...</span>
       </div>
 
-      <!-- Buttons -->
       <div class="btn-container">
         <button class="btn btn-back" id="backBtn">← Back</button>
         <button class="btn btn-submit" id="continueBtn" disabled>Submit →</button>
@@ -397,12 +349,10 @@
     const nameInput = document.getElementById('nameInput');
     const continueBtn = document.getElementById('continueBtn');
     const backBtn = document.getElementById('backBtn');
-    const closeBtn = document.getElementById('closeBtn');
     const marketingOptIn = document.getElementById('marketingOptIn');
     const nameError = document.getElementById('nameError');
     const loadingEl = document.getElementById('loading');
 
-    // Helper function to validate name
     function isValidName(name) {
       return name.trim().length >= 2;
     }
@@ -420,7 +370,6 @@
       continueBtn.disabled = !valid;
     }
 
-    // Helper function to merge objects
     function mergeData(target, source) {
       if (!source || typeof source !== 'object') return;
       Object.keys(source).forEach(key => {
@@ -430,7 +379,6 @@
       });
     }
 
-    // Load all form data from localStorage
     function loadAllFormData() {
       const formDataKeys = [
         'serviceFormData',
@@ -459,7 +407,6 @@
         }
       });
       
-      // Load saved name if exists
       if (allCollectedData.name && !nameInput.value) {
         nameInput.value = allCollectedData.name;
         updateContinueButton();
@@ -469,65 +416,80 @@
         marketingOptIn.checked = allCollectedData.marketingOptIn;
       }
       
-      console.log('Loaded all form data:', allCollectedData);
+      // console.log('Loaded all form data:', allCollectedData);
     }
 
-    // Helper functions for mapping
+    // ⭐ UPDATED MAPPING FUNCTIONS based on your data
     function mapServiceType(serviceType) {
       const mapping = {
-        'complete project': 'complete project',
-        'design only': 'design only',
-        'supervision only': 'supervision only',
-        'Design only': 'design only',
-        'Design and build': 'design and build',
-        'Build only': 'build only'
+        'Turnkey': 'Turnkey',
+        'Design only': 'Design only',
       };
-      return mapping[serviceType] || serviceType || 'complete project';
+      return mapping[serviceType] || serviceType || 'Turnkey';
     }
 
     function mapProjectType(projectType) {
       const mapping = {
-        'New Property': 'new property',
-        'Existing Property': 'existing property',
-        'Other': 'other'
+        'New Property': 'New Property',
+        'Existing Property': 'Existing Property',
+        'new property': 'New Property',
+        'existing property': 'Existing Property'
       };
-      return mapping[projectType] || projectType || 'new property';
+      return mapping[projectType] || projectType || 'New Property';
     }
 
     function mapPropertyType(propertyType) {
       const mapping = {
-        'House': 'house',
-        'Flat': 'flat',
-        'Other': 'other',
-        '1 BHK': '1 bhk',
-        '2 BHK': '2 bhk',
-        '3 BHK': '3 bhk',
-        '4 BHK': '4 bhk',
-        '5 BHK': '5 bhk',
-        '5+ BHK': '5+ bhk'
+        'Office': 'Office',
+        'Retail': 'Retail',
+        'F & B': 'F & B',
+        '1 BHK': '1 BHK',
+        '2 BHK': '2 BHK',
+        '3 BHK': '3 BHK',
+        '4 BHK': '4 BHK',
+        '5+ BHK': '5+ BHK'
       };
       return mapping[propertyType] || propertyType || '';
     }
 
     function cleanAreaSize(areaSize) {
       if (!areaSize) return '';
-      // Extract the range label if it's from preset
       if (typeof areaSize === 'object') {
         return areaSize.range || areaSize.display || '';
       }
       return areaSize.toString();
     }
 
-    function cleanBudget(budget) {
-      if (!budget) return '';
-      if (budget.includes('discuss-with-professional') || budget.includes('discuss with professional')) {
-        return 'discuss with professional';
-      }
-      return budget;
+    function mapBudget(budget) {
+      const mapping = {
+        'Upto ₹10 Lakhs': 'Upto ₹10 Lakhs',
+        '₹10 Lakhs - ₹20 Lakhs': '₹10 Lakhs - ₹20 Lakhs',
+        '₹20 Lakhs - ₹40 Lakhs': '₹20 Lakhs - ₹40 Lakhs',
+        '₹40 Lakhs or more': '₹40 Lakhs or more',
+        'I would like to discuss with the professional': 'Discuss with professional'
+      };
+      return mapping[budget] || budget || '';
     }
 
-    // Submit form to backend
-    async function submitForm() {
+    function mapHiringDecision(hiringDecision) {
+      const mapping = {
+        "I'm ready to hire now": "I'm ready to hire now",
+        "I'm likely to hire someone": "I'm likely to hire someone",
+        "I'm planning and researching": "I'm planning and researching",
+        'ready-to-hire-now': 'ready-to-hire-now',
+        'planning-and-researching': 'planning-and-researching'
+      };
+      return mapping[hiringDecision] || hiringDecision || 'planning-and-researching';
+    }
+
+    // ⭐ MAIN SUBMIT FUNCTION with preventDefault
+    async function submitForm(event) {
+      // Prevent page reload
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
       const name = nameInput.value.trim();
       const marketingOptInChecked = marketingOptIn.checked;
       
@@ -542,7 +504,7 @@
       localStorage.setItem('finalFormData', JSON.stringify(allCollectedData));
       localStorage.setItem('completeFormData', JSON.stringify(allCollectedData));
       
-      console.log('Final collected data:', allCollectedData);
+      // console.log('Final collected data:', allCollectedData);
       
       // Show loading state
       continueBtn.disabled = true;
@@ -552,169 +514,182 @@
       if (loadingEl) loadingEl.classList.add('show');
       
       try {
-        // Build the final data object for backend
-        const finalData = {
-          name: name,
-          phone: allCollectedData.phone || '',
-          email: allCollectedData.email || '',
-          city: allCollectedData.city || '',
-          state: allCollectedData.state || '',
-          pincode: allCollectedData.pincode || '',
-          serviceType: allCollectedData.serviceType || '',
-          projectType: allCollectedData.projectType || '',
-          propertyType: allCollectedData.propertyType || allCollectedData.selectedBHK || '',
-          areaSize: allCollectedData.propertyArea?.range || allCollectedData.areaSize || '',
-          budget: allCollectedData.budget || '',
-          hiringDecision: allCollectedData.hiringDecision || '',
-          marketingOptIn: marketingOptInChecked
-        };
-        
-        console.log('Final data before mapping:', finalData);
-        
-        // Map to backend fields using CONFIG if available
+        // ⭐ BUILD BACKEND DATA ACCORDING TO YOUR CONFIG
         let backendFormData = {};
         
+        // Use CONFIG if available
         if (typeof CONFIG !== 'undefined' && CONFIG.FORM?.FIELDS) {
           for (const [backendField, config] of Object.entries(CONFIG.FORM.FIELDS)) {
             const source = config.source;
-            let value = finalData[source];
+            let value = allCollectedData[source];
             
-            // Apply transformations for specific fields
+            // Apply specific mappings based on backend field
             switch(backendField) {
-              case 'type_of_service':
-                value = mapServiceType(value);
-                break;
-              case 'project_type':
-                value = mapProjectType(value);
-                break;
-              case 'property_type':
-                value = mapPropertyType(value);
-                break;
-              case 'property_size':
-                value = cleanAreaSize(value);
-                break;
-              case 'budget':
-                value = cleanBudget(value);
-                break;
-              case 'hiring_decision':
-                value = value || 'planning and researching';
+              case 'customer_name':
+                value = name;
                 break;
               case 'customer_contact':
-                value = (value || '').replace(/^\+91/, '').replace(/\D/g, '').slice(0, 10);
+                value = allCollectedData.phone || '';
+                value = value.replace(/^\+91/, '').replace(/\D/g, '').slice(0, 10);
+                break;
+              case 'customer_email':
+                value = allCollectedData.email || '';
                 break;
               case 'city':
-                value = value || '';
+                value = allCollectedData.city || '';
                 break;
               case 'state':
-                value = value || '';
+                value = allCollectedData.state || '';
                 break;
               case 'pincode':
-                value = value || '';
+                value = allCollectedData.pincode || '';
                 break;
-              case 'name':
-                value = name;
+              case 'type_of_space':
+                // Priority: type_of_space > bhk_type > bhkConfiguration
+                value = allCollectedData.type_of_space || 
+                        allCollectedData.bhk_type || 
+                        allCollectedData.bhkConfiguration || 
+                        '';
+                break;
+              case 'type_of_service':
+                value = mapServiceType(allCollectedData.serviceType);
+                break;
+              case 'property_type':
+                value = mapPropertyType(allCollectedData.property_type);
+                break;
+              case 'property_size':
+                value = cleanAreaSize(allCollectedData.propertyArea || allCollectedData.property_size);
+                break;
+              case 'project_type':
+                value = mapProjectType(allCollectedData.projectType);
+                break;
+              case 'range_label':
+                value = mapBudget(allCollectedData.budget);
+                break;
+              case 'hiring_decision':
+                value = mapHiringDecision(allCollectedData.hiringDecision);
+                break;
+              case 'description':
+                value = allCollectedData.description || '';
+                break;
+              case 'bhk_configuration':
+                value = allCollectedData.bhkConfiguration || allCollectedData.bhk_type || '';
+                break;
+              case 'claim_limit':
+                value = config.defaultValue || 3;
+                break;
+              case 'admin_approval':
+                value = config.defaultValue || 'pending';
+                break;
+              default:
+                // Use value as is
                 break;
             }
             
-            if (value !== undefined && value !== '') {
+            // Only add if value exists or field is required
+            if (config.required || (value !== undefined && value !== null && value !== '')) {
               backendFormData[backendField] = value;
             }
           }
         } else {
-          // Fallback mapping if CONFIG is not available
+          // ⭐ FALLBACK MAPPING (if CONFIG not available)
           backendFormData = {
-            name: name,
             customer_name: name,
-            customer_contact: (finalData.phone || '').replace(/\D/g, '').slice(0, 10),
-            email: finalData.email || '',
-            city: finalData.city || '',
-            state: finalData.state || '',
-            pincode: finalData.pincode || '',
-            type_of_service: mapServiceType(finalData.serviceType),
-            project_type: mapProjectType(finalData.projectType),
-            property_type: mapPropertyType(finalData.propertyType),
-            property_size: cleanAreaSize(finalData.areaSize),
-            budget: cleanBudget(finalData.budget),
-            hiring_decision: finalData.hiringDecision || 'planning and researching',
-            marketing_opt_in: marketingOptInChecked
+            customer_contact: (allCollectedData.phone || '').replace(/\D/g, '').slice(0, 10),
+            customer_email: allCollectedData.email || '',
+            city: allCollectedData.city || '',
+            state: allCollectedData.state || '',
+            pincode: allCollectedData.pincode || '',
+            type_of_space: allCollectedData.type_of_space || '',
+            type_of_service: mapServiceType(allCollectedData.serviceType),
+            property_type: mapPropertyType(allCollectedData.propertyType ||""),
+            property_size: cleanAreaSize(allCollectedData.propertyArea || allCollectedData.property_size),
+            project_type: mapProjectType(allCollectedData.projectType),
+            range_label: mapBudget(allCollectedData.budget),
+            hiring_decision: mapHiringDecision(allCollectedData.hiringDecision),
+            description: allCollectedData.description || '',
+            bhk_configuration: allCollectedData.bhkConfiguration || allCollectedData.bhk_type || '',
+            claim_limit: 3,
+            admin_approval: 'pending'
           };
         }
         
-        console.log('Backend form data:', backendFormData);
+        // console.log('✅ Final Backend Payload:', backendFormData);
         
-        // Check if we have API endpoint
+        // Get API URL
         const apiUrl = (typeof CONFIG !== 'undefined' && CONFIG.API?.BASE_URL) 
-          ? `${CONFIG.API.BASE_URL}${CONFIG.API.ENDPOINTS?.LEADS?.FORM || '/api/v1/leads'}`
-          : null;
+          ? `${CONFIG.API.BASE_URL}${CONFIG.API.ENDPOINTS?.LEADS?.FORM || '/api/v1/lead/data'}`
+          : 'http://localhost:8000/api/v1/lead/data';
         
-        if (apiUrl) {
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(backendFormData)
-          });
-          
-          console.log('Response status:', response.status);
-          
-          if (response.ok) {
-            console.log('Form submitted successfully');
-            // Clear sensitive data after successful submission
-            // localStorage.clear();
-            
-            // Redirect to success page
-            const redirectUrl = (typeof CONFIG !== 'undefined' && CONFIG.UI?.SUCCESS_REDIRECT) 
-              ? CONFIG.UI.SUCCESS_REDIRECT 
-              : 'thank-you.html';
-            window.location.href = redirectUrl;
-          } else {
-            let errorMessage = 'Unknown error';
-            try {
-              const errorData = await response.json();
-              errorMessage = errorData.message || JSON.stringify(errorData);
-            } catch (e) {
-              errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-            }
-            
-            console.error('Server error:', errorMessage);
-            alert('Error submitting form: ' + errorMessage);
-            
-            // Reset button state
-            continueBtn.disabled = false;
-            continueBtn.textContent = originalText;
-            if (backBtn) backBtn.disabled = false;
-            if (loadingEl) loadingEl.classList.remove('show');
-          }
+        // console.log('📡 Sending to:', apiUrl);
+        
+        // Make API call
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(backendFormData)
+        });
+        
+        // console.log('📊 Response status:', response.status);
+        
+        let responseData;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          responseData = await response.json();
         } else {
-          // Mock success for testing
-          console.log('API not configured - mock submission successful');
-          console.log('Mock data:', backendFormData);
-          alert('Demo: Form submitted successfully! (API not configured)');
+          responseData = await response.text();
+        }
+        
+        // console.log('📨 Response data:', responseData);
+        
+        if (response.ok) {
+          // console.log('✅ Form submitted successfully!');
           
-          // Reset button state
-          continueBtn.disabled = false;
-          continueBtn.textContent = originalText;
-          if (backBtn) backBtn.disabled = false;
-          if (loadingEl) loadingEl.classList.remove('show');
+          // Store submission status
+          localStorage.setItem('formSubmissionStatus', JSON.stringify({
+            submitted: true,
+            timestamp: new Date().toISOString(),
+            leadId: responseData?.id || responseData?.lead_id || null
+          }));
           
-          // For demo, redirect to thank you
-          // window.location.href = 'thank-you.html';
+          // Redirect to success page
+          const redirectUrl = (typeof CONFIG !== 'undefined' && CONFIG.UI?.SUCCESS_REDIRECT) 
+            ? CONFIG.UI.SUCCESS_REDIRECT 
+            : 'thank-you.html';
+          
+          // console.log('🚀 Redirecting to:', redirectUrl);
+          window.location.href = redirectUrl;
+        } else {
+          let errorMessage = 'Submission failed';
+          if (responseData && typeof responseData === 'object') {
+            errorMessage = responseData.message || responseData.error || JSON.stringify(responseData);
+          } else if (typeof responseData === 'string') {
+            errorMessage = responseData;
+          }
+          
+          throw new Error(errorMessage);
         }
       } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('Network error. Please check your connection and try again.');
+        console.error('❌ Error:', error);
+        alert('Error submitting form: ' + error.message);
         
         // Reset button state
         continueBtn.disabled = false;
-        continueBtn.textContent = originalText;
+        continueBtn.textContent = 'Submit →';
         if (backBtn) backBtn.disabled = false;
         if (loadingEl) loadingEl.classList.remove('show');
       }
     }
 
-    function goBack() {
-      // Save current name before going back
+    function goBack(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
       const name = nameInput.value.trim();
       if (name) {
         allCollectedData.name = name;
@@ -724,34 +699,20 @@
       window.location.href = 'otp.html';
     }
 
-    function closeModal() {
-      console.log('Close clicked - staying on page');
-    }
-
-    // Setup event listeners
     function setupEventListeners() {
       if (nameInput) {
         nameInput.addEventListener('input', updateContinueButton);
       }
       
       if (continueBtn) {
+        continueBtn.removeEventListener('click', submitForm);
         continueBtn.addEventListener('click', submitForm);
       }
       
       if (backBtn) {
+        backBtn.removeEventListener('click', goBack);
         backBtn.addEventListener('click', goBack);
       }
-      
-      if (closeBtn) {
-        closeBtn.addEventListener('click', closeModal);
-      }
-      
-      // Close on outside click
-      document.querySelector('.container')?.addEventListener('click', function(e) {
-        if (e.target === document.querySelector('.container')) {
-          closeModal();
-        }
-      });
     }
 
     // Initialize
@@ -760,7 +721,6 @@
       updateContinueButton();
       setupEventListeners();
       
-      // Focus on name input
       if (nameInput) nameInput.focus();
     });
   </script>

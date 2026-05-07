@@ -444,7 +444,7 @@
       selectedBhkBadge.innerHTML = `⚠️ Please select BHK type first`;
     }
 
-    console.log("Loaded selected BHK:", selectedBHK);
+    // console.log("Loaded selected BHK:", selectedBHK);
   }
 
   // Get area options based on selected BHK
@@ -527,10 +527,10 @@
     const areaValid = isAreaSelected && isDescriptionFilled;
     
     // Debug logs to see what's happening
-    console.log('isAreaSelected:', isAreaSelected);
-    console.log('isDescriptionFilled:', isDescriptionFilled);
-    console.log('areaValid:', areaValid);
-    console.log('Button disabled:', !areaValid);
+    // console.log('isAreaSelected:', isAreaSelected);
+    // console.log('isDescriptionFilled:', isDescriptionFilled);
+    // console.log('areaValid:', areaValid);
+    // console.log('Button disabled:', !areaValid);
     
     // Button enable when areaValid is TRUE, disable when FALSE
     continueBtn.disabled = !areaValid;

@@ -315,7 +315,7 @@
       if (raw) {
         try {
           previousFormData = JSON.parse(raw);
-          console.log("Loaded previous data:", previousFormData);
+          // console.log("Loaded previous data:", previousFormData);
         } catch(e) { console.warn(e); }
       }
 
@@ -380,7 +380,7 @@
           const radio = this.querySelector('input[type="radio"]');
           formData.budget = radio.value;
           
-          console.log("Budget selected:", formData.budget);
+          // console.log("Budget selected:", formData.budget);
           
           // Save to localStorage immediately
           saveToLocalStorage();
@@ -419,7 +419,7 @@
     function continueToNext() {
       if (!formData.budget) return;
       
-      console.log('Budget selected:', formData);
+      // console.log('Budget selected:', formData);
       
       // Combine all forms data
       const completeFormData = {

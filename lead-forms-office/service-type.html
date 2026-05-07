@@ -279,7 +279,7 @@
       const spacesStored = localStorage.getItem('spacesFormData');
       if (spacesStored) {
         spacesFormData = JSON.parse(spacesStored);
-        console.log("Loaded spaces data:", spacesFormData);
+        // console.log("Loaded spaces data:", spacesFormData);
       }
 
       // Preselect previously chosen service type if available
@@ -318,7 +318,7 @@
           
           // Store data in localStorage
           localStorage.setItem('serviceFormData', JSON.stringify(formData));
-          console.log("Service type selected:", formData.serviceType);
+          // console.log("Service type selected:", formData.serviceType);
         });
       });
 

@@ -316,7 +316,6 @@
       { value: "2 BHK", label: "2 BHK", icon: "" },
       { value: "3 BHK", label: "3 BHK", icon: "" },
       { value: "4 BHK", label: "4 BHK", icon: "" },
-      // { value: "5 BHK", label: "5 BHK", icon: "" },
       { value: "5+ BHK", label: "5+ BHK", icon: "" }
     ];
 
@@ -342,7 +341,7 @@
         try {
           const parsed = JSON.parse(storedProperty);
           propertyType = parsed.property_type;
-          console.log("Property type loaded:", propertyType);
+          // console.log("Property type loaded:", propertyType);
         } catch(e) { console.warn(e); }
       }
       
@@ -353,9 +352,14 @@
           try {
             const parsed = JSON.parse(completeData);
             propertyType = parsed.property_type;
-            console.log("Property type from completeData:", propertyType);
+            // console.log("Property type from completeData:", propertyType);
           } catch(e) { console.warn(e); }
         }
+      }
+      
+      // ⭐ CRITICAL: Store property_type in formData right away
+      if (propertyType) {
+        formData.property_type = propertyType;
       }
       
       // Update badge and heading
@@ -422,19 +426,23 @@
           const radio = this.querySelector('input[type="radio"]');
           radio.checked = true;
           
-          // Store in formData with appropriate key
+          // ⭐ Store in formData with appropriate keys
           if (propertyType === "Residential") {
             formData.bhk_type = radio.value;
             formData.type_of_space = radio.value;
+            formData.bhkConfiguration = radio.value; // For config mapping
           } else {
             formData.type_of_space = radio.value;
           }
+          
+          // ⭐ ALWAYS store property_type
+          formData.property_type = propertyType;
           
           continueBtn.disabled = false;
           
           // Save to localStorage
           saveToLocalStorage();
-          console.log("Space type selected:", formData);
+          // console.log("Space type selected:", formData);
         });
         
         optionsGrid.appendChild(label);
@@ -449,7 +457,7 @@
           const saved = JSON.parse(stored);
           if (saved.type_of_space || saved.bhk_type) {
             formData = saved;
-            console.log("Loaded saved space data:", formData);
+            // console.log("Loaded saved space data:", formData);
           }
         } catch(e) { console.warn(e); }
       }
@@ -465,12 +473,21 @@
           if (parsed.bhk_type && !formData.bhk_type) {
             formData.bhk_type = parsed.bhk_type;
           }
+          // ⭐ Load property_type if exists
+          if (parsed.property_type && !formData.property_type) {
+            formData.property_type = parsed.property_type;
+          }
           allFormData = parsed;
         } catch(e) { console.warn(e); }
       }
     }
 
     function saveToLocalStorage() {
+      // ⭐ Always ensure property_type is in formData
+      if (propertyType && !formData.property_type) {
+        formData.property_type = propertyType;
+      }
+      
       // Save spaces data
       localStorage.setItem('spacesFormData', JSON.stringify(formData));
       
@@ -483,15 +500,21 @@
         } catch(e) {}
       }
       
+      // ⭐ Merge all data
       completeData.type_of_space = formData.type_of_space;
       if (formData.bhk_type) {
         completeData.bhk_type = formData.bhk_type;
       }
-      completeData.property_type = propertyType;
+      if (formData.bhkConfiguration) {
+        completeData.bhkConfiguration = formData.bhkConfiguration;
+      }
+      // ⭐ CRITICAL: Save property_type
+      completeData.property_type = formData.property_type || propertyType;
       
       localStorage.setItem('completeFormData', JSON.stringify(completeData));
       
-      console.log("Saved to localStorage:", formData);
+      // console.log("Saved to localStorage:", formData);
+      // console.log("Complete data:", completeData);
     }
 
     function setupEventListeners() {
@@ -514,12 +537,15 @@
         formData.type_of_space = formData.bhk_type;
       }
       
-      console.log("Space type selected - continuing:", formData);
+      // ⭐ Ensure property_type is in formData
+      formData.property_type = propertyType;
+      
+      // console.log("Space type selected - continuing:", formData);
       
       // Save final data
       saveToLocalStorage();
       
-      // Update completeFormData
+      // Update completeFormData with ALL data
       const existingData = localStorage.getItem('completeFormData');
       let completeData = {};
       if (existingData) {
@@ -528,14 +554,21 @@
         } catch(e) {}
       }
       
+      // ⭐ Merge all data before redirect
       completeData.type_of_space = formData.type_of_space;
       if (formData.bhk_type) {
         completeData.bhk_type = formData.bhk_type;
       }
-      completeData.property_type = propertyType;
+      if (formData.bhkConfiguration) {
+        completeData.bhkConfiguration = formData.bhkConfiguration;
+      }
+      completeData.property_type = formData.property_type || propertyType;
+      completeData.timestamp = new Date().toISOString();
       
       localStorage.setItem('completeFormData', JSON.stringify(completeData));
       localStorage.setItem('spacesFormData', JSON.stringify(formData));
+      
+      // console.log("Final completeFormData:", completeData);
       
       // Redirect to next step (service-type.html)
       window.location.href = 'service-type.html';

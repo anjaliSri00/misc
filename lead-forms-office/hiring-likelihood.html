@@ -321,7 +321,7 @@
       if (raw) {
         try {
           previousFormData = JSON.parse(raw);
-          console.log("Loaded previous data:", previousFormData);
+          // console.log("Loaded previous data:", previousFormData);
         } catch(e) { console.warn(e); }
       }
 
@@ -446,7 +446,7 @@
             if (formData.otherHiringDecision) delete formData.otherHiringDecision;
           }
           
-          console.log("Hiring decision selected:", formData);
+          // console.log("Hiring decision selected:", formData);
           saveToLocalStorage();
         });
       });
@@ -521,7 +521,7 @@
       
       if (!finalDecision || finalDecision === 'other') return;
       
-      console.log('Hiring decision selected:', finalDecision);
+      // console.log('Hiring decision selected:', finalDecision);
       
       // Combine all forms data
       const completeFormData = {

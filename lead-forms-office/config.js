@@ -196,8 +196,8 @@
         transformed.claim_limit = 3;
       }
       
-      console.log('Original data:', data);
-      console.log('Transformed payload:', transformed);
+      // console.log('Original data:', data);
+      // console.log('Transformed payload:', transformed);
       return transformed;
     }
   };

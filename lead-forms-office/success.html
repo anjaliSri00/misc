@@ -326,7 +326,6 @@
       </div>
 
       <button class="btn" id="closeBtn">Close & Start New Request</button>
-      <button class="btn btn-secondary" id="stayBtn">Stay on Page</button>
     </div>
   </div>
 
@@ -353,6 +352,7 @@
       "completeFormData",
       "finalFormData",
       "submittedFormData",
+      "formSubmissionStatus",
       'areaData'
     ];
 
@@ -376,7 +376,7 @@
         } catch(e) {}
       }
       
-      console.log('Form data cleared from localStorage');
+      // console.log('Form data cleared from localStorage');
     }
 
     // Option 1: Clear and redirect to start new form
@@ -396,7 +396,7 @@
       setTimeout(() => {
         const hasFormData = FORM_KEYS_TO_CLEAR.some(key => localStorage.getItem(key));
         if (hasFormData) {
-          console.log('Auto-clearing stale form data after timeout');
+          // console.log('Auto-clearing stale form data after timeout');
           clearFormData();
         }
       }, 5 * 60 * 1000); // 5 minutes
@@ -409,7 +409,7 @@
                        localStorage.getItem('completeFormData');
       
       if (!formData) {
-        console.log('No form data found, redirecting to start');
+        // console.log('No form data found, redirecting to start');
         window.location.href = 'index.html';
         return;
       }
@@ -420,22 +420,13 @@
 
     // Attach event listeners
     const closeBtn = document.getElementById('closeBtn');
-    const stayBtn = document.getElementById('stayBtn');
     
     if (closeBtn) {
       closeBtn.addEventListener('click', startNewRequest);
     }
-    
-    if (stayBtn) {
-      stayBtn.addEventListener('click', stayOnPage);
-    }
 
     // Also clear on page unload (optional - when user closes tab)
     window.addEventListener('beforeunload', () => {
-      // This will run when user closes the tab
-      // Be careful - this may clear data if user wants to come back
-      // Comment out if you don't want this behavior
-      // clearFormData();
     });
   </script>
 </body>
